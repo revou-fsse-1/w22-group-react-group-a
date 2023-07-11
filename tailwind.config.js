@@ -11,7 +11,9 @@ module.exports = {
       "main-purple": "#635FC7",
       "main-purple-hover": "#A8A4FF",
 
+      "white-custom": "#FFFFFF",
       "black-custom": "#000112",
+      "black-overlay": "rgba(0, 0, 0, 0.5)",
       "red-custom": "#EA5555",
       "red-custom-hover": "#FF9898",
 
