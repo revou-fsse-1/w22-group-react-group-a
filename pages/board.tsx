@@ -15,6 +15,7 @@ import Sidebar from "@/components/Sidebar";
 import BoardsSelection from "@/components/SidebarMobile";
 import EditDeleteSelection from "@/components/EditDeleteSelection";
 import { useState } from "react";
+import * as React from "react";
 
 export default function Board() {
   // BOARDS SELECTION STATE
