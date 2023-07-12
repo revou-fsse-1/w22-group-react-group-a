@@ -18,6 +18,7 @@ import NewTaskForm from "@/components/NewTaskForm";
 import EditTaskForm from "@/components/EditTaskForm";
 import TaskDetail from "@/components/TaskDetail";
 import DeleteTaskConfirm from "@/components/DeleteTaskConfirm";
+import DeleteBoardConfirm from "@/components/DeleteBoardConfirm";
 
 export default function Board() {
   // BOARD SELECT
@@ -41,6 +42,10 @@ export default function Board() {
   const toggleEditTaskForm = () => {
     setEditTaskFormIsActive((current) => !current);
   };
+
+  //   DELETE BOARD
+  const [deleteBoardConfirmIsActive, setDeleteBoardConfirmIsActive] =
+    useState(false);
 
   return (
     // BACKGROUND
@@ -111,14 +116,23 @@ export default function Board() {
                 alt="icon-vertical-ellipsis"
               />
             </button>
-            {editDeleteBoardIsActive && <EditDeleteBoard />}
+            {editDeleteBoardIsActive && (
+              <EditDeleteBoard
+                setDeleteBoardConfirmIsActive={setDeleteBoardConfirmIsActive}
+                setEditDeleteBoardIsActive={setEditDeleteBoardIsActive}
+              />
+            )}
           </div>
         </nav>
         {/* POPUPS */}
         {boardsSelectionIsActive && <SidebarMobile />}
         {newTaskFormIsActive && <NewTaskForm />}
         {taskDetailIsActive && <TaskDetail />}
-        {/* {editTaskFormIsActive && <EditTaskForm />} */}
+        {deleteBoardConfirmIsActive && (
+          <DeleteBoardConfirm
+            setDeleteBoardConfirmIsActive={setDeleteBoardConfirmIsActive}
+          />
+        )}
 
         {/* VIEWPORT */}
         <section className="w-full h-full flex p-4 pt-6 gap-6 overflow-x-scroll">
