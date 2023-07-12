@@ -6,7 +6,7 @@ import IconBoardPurple from "../assets/icon-board-purple.svg";
 import IconHideSidebar from "../assets/icon-hide-sidebar.svg";
 
 export default function Sidebar(props: {
-  setBoardsSelectionIsActive: React.Dispatch<SetStateAction<boolean>>;
+  setBoardsSelectionIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const hideSidebar = () => {
     props.setBoardsSelectionIsActive(false);
