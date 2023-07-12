@@ -13,23 +13,34 @@ import Column from "@/components/Column";
 import Sidebar from "@/components/Sidebar";
 import EmptyBoardMessage from "@/components/EmptyBoardMessage";
 import SidebarMobile from "@/components/SidebarMobile";
-import EditDeleteSelection from "@/components/EditDeleteSelection";
+import EditDeleteBoard from "@/components/EditDeleteBoard";
 import NewTaskForm from "@/components/NewTaskForm";
+import EditTaskForm from "@/components/EditTaskForm";
 import TaskDetail from "@/components/TaskDetail";
+import DeleteTaskConfirm from "@/components/DeleteTaskConfirm";
 
 export default function Board() {
-  // BOARDS SELECTION STATE
+  // BOARD SELECT
   const [boardsSelectionIsActive, setBoardsSelectionIsActive] = useState(false);
   const [activeBoard, setActiveBoard] = useState("");
 
-  //   EDIT DELETE SELECTION STATE
+  //   EDIT DELETE BOARD
   const [editDeleteBoardIsActive, setEditDeleteBoardIsActive] = useState(false);
   const toggleEditDeleteBoard = () => {
     setEditDeleteBoardIsActive((current) => !current);
   };
 
-  //   NEW TASK FORM STATE
+  //   NEW TASK
   const [newTaskFormIsActive, setNewTaskFormIsActive] = useState(false);
+
+  //   TASK DETAIL
+  const [taskDetailIsActive, setTaskDetailIsActive] = useState(false);
+
+  //   EDIT TASK
+  const [editTaskFormIsActive, setEditTaskFormIsActive] = useState(false);
+  const toggleEditTaskForm = () => {
+    setEditTaskFormIsActive((current) => !current);
+  };
 
   return (
     // BACKGROUND
@@ -100,20 +111,21 @@ export default function Board() {
                 alt="icon-vertical-ellipsis"
               />
             </button>
-            {editDeleteBoardIsActive && <EditDeleteSelection />}
+            {editDeleteBoardIsActive && <EditDeleteBoard />}
           </div>
         </nav>
         {/* POPUPS */}
         {boardsSelectionIsActive && <SidebarMobile />}
         {newTaskFormIsActive && <NewTaskForm />}
-        <TaskDetail />
+        {taskDetailIsActive && <TaskDetail />}
+        {/* {editTaskFormIsActive && <EditTaskForm />} */}
 
         {/* VIEWPORT */}
         <section className="w-full h-full flex p-4 pt-6 gap-6 overflow-x-scroll">
           {/* COLUMN */}
-          <Column />
-          <Column />
-          <Column />
+          <Column setTaskDetailIsActive={setTaskDetailIsActive} />
+          <Column setTaskDetailIsActive={setTaskDetailIsActive} />
+          <Column setTaskDetailIsActive={setTaskDetailIsActive} />
           <button className="flex justify-center items-center text-heading-xl text-medium-grey w-[280px] min-w-[280px] h-[815px] bg-gradient-to-b from-dark-grey/25 to-dark-grey/10 rounded-md mt-10">
             + New Column
           </button>
