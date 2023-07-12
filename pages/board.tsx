@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 import LogoMobile from "../assets/logo-mobile.svg";
 import LogoLight from "../assets/logo-light.svg";
@@ -6,16 +7,15 @@ import IconChevronDown from "../assets/icon-chevron-down.svg";
 import IconChevronUp from "../assets/icon-chevron-up.svg";
 import IconPlus from "../assets/icon-plus.svg";
 import IconShowSidebar from "../assets/icon-show-sidebar.svg";
-import IconBoard from "../assets/icon-board.svg";
-import IconBoardWhite from "../assets/icon-board-white.svg";
-import IconBoardPurple from "../assets/icon-board-purple.svg";
 import IconVerticalEllipsis from "../assets/icon-vertical-ellipsis.svg";
 
+import Column from "@/components/Column";
 import Sidebar from "@/components/Sidebar";
-import BoardsSelection from "@/components/SidebarMobile";
+import EmptyBoardMessage from "@/components/EmptyBoardMessage";
+import SidebarMobile from "@/components/SidebarMobile";
 import EditDeleteSelection from "@/components/EditDeleteSelection";
-import { useState } from "react";
-import * as React from "react";
+import NewTaskForm from "@/components/NewTaskForm";
+import TaskDetail from "@/components/TaskDetail";
 
 export default function Board() {
   // BOARDS SELECTION STATE
@@ -27,6 +27,9 @@ export default function Board() {
   const toggleEditDeleteBoard = () => {
     setEditDeleteBoardIsActive((current) => !current);
   };
+
+  //   NEW TASK FORM STATE
+  const [newTaskFormIsActive, setNewTaskFormIsActive] = useState(false);
 
   return (
     // BACKGROUND
@@ -72,18 +75,24 @@ export default function Board() {
           </button>
           <div className="flex justify-center items-center gap-6 ml-auto">
             {/* ADD NEW TASK MOBILE */}
-            <button className="bg-main-purple w-[48px] h-[32px] rounded-full text-heading-md flex justify-center items-center hover:cursor-pointer hover:bg-main-purple-hover md:hidden">
+            <button
+              onClick={() => setNewTaskFormIsActive(true)}
+              className="bg-main-purple w-[48px] h-[32px] rounded-full text-heading-md flex justify-center items-center hover:cursor-pointer hover:bg-main-purple-hover md:hidden"
+            >
               <Image priority src={IconPlus} alt="icon-plus" />
             </button>
             {/* ADD NEW TASK TABLET & DESKTOP */}
-            <button className="hidden md:block bg-main-purple text-heading-md p-4 px-6 rounded-full hover:bg-main-purple-hover">
+            <button
+              onClick={() => setNewTaskFormIsActive(true)}
+              className="hidden md:block bg-main-purple text-heading-md p-4 px-6 rounded-full hover:bg-main-purple-hover"
+            >
               + Add New Task
             </button>
             {/* EDIT DELETE TOGGLE BUTTON */}
 
             <button
               onClick={toggleEditDeleteBoard}
-              className="hover:cursor-pointer relative"
+              className="hover:cursor-pointer relative h-full"
             >
               <Image
                 priority
@@ -91,24 +100,25 @@ export default function Board() {
                 alt="icon-vertical-ellipsis"
               />
             </button>
-
             {editDeleteBoardIsActive && <EditDeleteSelection />}
           </div>
         </nav>
-        {/* POPUP */}
-        {boardsSelectionIsActive && <BoardsSelection />}
+        {/* POPUPS */}
+        {boardsSelectionIsActive && <SidebarMobile />}
+        {newTaskFormIsActive && <NewTaskForm />}
+        <TaskDetail />
 
         {/* VIEWPORT */}
-        <section className="w-full h-full flex p-6">
-          {/* EMPTY MESSAGE */}
-          <div className="flex flex-col w-full items-center justify-center gap-8">
-            <span className="text-heading-lg text-center text-medium-grey">
-              This board is empty. Create a new column to get started
-            </span>
-            <button className="bg-main-purple text-heading-md p-4 px-6 rounded-full hover:bg-main-purple-hover">
-              + Add New Column
-            </button>
-          </div>
+        <section className="w-full h-full flex p-4 pt-6 gap-6 overflow-x-scroll">
+          {/* COLUMN */}
+          <Column />
+          <Column />
+          <Column />
+          <button className="flex justify-center items-center text-heading-xl text-medium-grey w-[280px] min-w-[280px] h-[815px] bg-gradient-to-b from-dark-grey/25 to-dark-grey/10 rounded-md mt-10">
+            + New Column
+          </button>
+          {/* EMPTY BOARD MESSAGE */}
+          {/* <EmptyBoardMessage /> */}
         </section>
       </div>
 
