@@ -89,7 +89,9 @@ export default function EditTaskForm() {
         </label>
         <button
           type="button"
-          className="flex relative justify-between items-center h-[40px] bg-dark-grey border border-lines-dark mb-6 px-4 rounded-md text-white-custom text-body-lg placeholder:text-white-custom/25 placeholder:text-body-lg outline-none"
+          className={`flex relative justify-between items-center h-[40px] bg-dark-grey border ${
+            statusListIsActive ? "border-main-purple" : "border-lines-dark"
+          } hover:border-main-purple mb-6 px-4 rounded-md text-white-custom text-body-lg placeholder:text-white-custom/25 placeholder:text-body-lg outline-none`}
           onClick={toggleStatusList}
         >
           Todo
