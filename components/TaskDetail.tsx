@@ -13,23 +13,17 @@ import DeleteTaskConfirm from "./DeleteTaskConfirm";
 import EditTaskForm from "./EditTaskForm";
 
 export default function TaskDetail() {
-  // STATUS LIST
   const [statusListIsActive, setStatusListIsActive] = useState(false);
+  const [editTaskFormIsActive, setEditTaskFormIsActive] = useState(false);
+  const [editDeleteTaskIsActive, setEditDeleteTaskIsActive] = useState(false);
+  const [deleteTaskConfirmIsActive, setDeleteTaskConfirmIsActive] =
+    useState(false);
   const toggleStatusList = () => {
     setStatusListIsActive((current) => !current);
   };
-  //   EDIT TASK FORM
-  const [editTaskFormIsActive, setEditTaskFormIsActive] = useState(false);
-
-  //   EDIT DELETE TASK
-  const [editDeleteTaskIsActive, setEditDeleteTaskIsActive] = useState(false);
   const toggleEditDeleteTask = () => {
     setEditDeleteTaskIsActive((current) => !current);
   };
-
-  //   DELETE TASK CONFIRM
-  const [deleteTaskConfirmIsActive, setDeleteTaskConfirmIsActive] =
-    useState(false);
 
   return (
     <>
@@ -101,7 +95,7 @@ export default function TaskDetail() {
                 value={"Surveying and testing"}
               />
               <label
-                className="text-body-md rounded-md text-white-custom  hover:cursor-pointer peer-checked/draft:line-through peer-checked/draft:text-white-custom/50"
+                className="text-body-md rounded-md text-white-custom hover:cursor-pointer peer-checked/draft:line-through peer-checked/draft:text-white-custom/50"
                 htmlFor="draft"
               >
                 Draft
