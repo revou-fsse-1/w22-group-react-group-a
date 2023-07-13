@@ -3,6 +3,8 @@ import Image from "next/image";
 import Task from "./Task";
 
 export default function Column(props: {
+  key: string;
+  data: object;
   setTaskDetailIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   return (
