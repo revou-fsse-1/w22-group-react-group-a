@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { useState } from "react";
+import { Dialog } from "@headlessui/react";
 
 import IconCross from "../assets/icon-cross.svg";
 import IconChevronDown from "../assets/icon-chevron-down.svg";
@@ -7,18 +8,20 @@ import IconChevronUp from "../assets/icon-chevron-up.svg";
 
 import StatusList from "./StatusList";
 
-export default function NewTaskForm() {
+export default function NewTaskForm(props: {
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   // STATUS LIST
   const [statusListIsActive, setStatusListIsActive] = useState(false);
   const toggleStatusList = () => {
     setStatusListIsActive((current) => !current);
   };
-
   return (
     <div className="bg-black-overlay flex justify-center items-center w-screen h-screen min-h-fit p-4 fixed z-50">
       <form
         action="submit"
-        className="flex flex-col w-full max-w-[480px] h-fit p-6 rounded-md bg-dark-grey"
+        className="flex flex-col w-full max-w-[480px] h-fit p-8 rounded-md bg-dark-grey"
       >
         <h3 className="text-heading-lg mb-6">Add New Task</h3>
         {/* TITLE */}

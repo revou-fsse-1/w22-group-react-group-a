@@ -84,13 +84,28 @@ export default function TaskDetail() {
                 Research competitor pricing and business models
               </p>
             </div>
-
             {/* NOT DONE */}
             <div className="bg-very-dark-grey px-4 py-6 gap-6 rounded-md flex items-center">
               <button className="bg-white-custom w-[16px] min-w-[16px] h-[16px] flex justify-center items-center rounded-sm"></button>
               <p className="text-body-md text-white-custom">
                 Surveying and testing
               </p>
+            </div>
+            {/* CHECKBOX */}
+            <div className="flex items-center bg-very-dark-grey min-h-[64px] px-4 py-6 rounded-md gap-6">
+              <input
+                className="w-[16px] h-[16px] rounded-md peer/draft accent-main-purple hover:cursor-pointer"
+                type="checkbox"
+                id="draft"
+                name="subtask"
+                value={"Surveying and testing"}
+              />
+              <label
+                className="text-body-md rounded-md text-white-custom  hover:cursor-pointer peer-checked/draft:line-through peer-checked/draft:text-white-custom/50"
+                htmlFor="draft"
+              >
+                Draft
+              </label>
             </div>
           </div>
 

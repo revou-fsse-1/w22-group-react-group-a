@@ -19,34 +19,27 @@ import EditTaskForm from "@/components/EditTaskForm";
 import TaskDetail from "@/components/TaskDetail";
 import DeleteTaskConfirm from "@/components/DeleteTaskConfirm";
 import DeleteBoardConfirm from "@/components/DeleteBoardConfirm";
+import NewBoardForm from "@/components/NewBoardForm";
+import EditBoardForm from "@/components/EditBoardForm";
 
 export default function Board() {
-  // BOARD SELECT
   const [boardsSelectionIsActive, setBoardsSelectionIsActive] = useState(false);
   const [activeBoard, setActiveBoard] = useState("");
-
-  //   EDIT DELETE BOARD
   const [editDeleteBoardIsActive, setEditDeleteBoardIsActive] = useState(false);
   const toggleEditDeleteBoard = () => {
     setEditDeleteBoardIsActive((current) => !current);
   };
-
-  //   NEW TASK
   const [newTaskFormIsActive, setNewTaskFormIsActive] = useState(false);
-
-  //   TASK DETAIL
   const [taskDetailIsActive, setTaskDetailIsActive] = useState(false);
-
-  //   EDIT TASK
   const [editTaskFormIsActive, setEditTaskFormIsActive] = useState(false);
   const toggleEditTaskForm = () => {
     setEditTaskFormIsActive((current) => !current);
   };
-
-  //   DELETE BOARD
   const [deleteBoardConfirmIsActive, setDeleteBoardConfirmIsActive] =
     useState(false);
 
+  const [editBoardFormIsActive, setEditBoardFormIsActive] = useState(false);
+  const [newBoardFormIsActive, setNewBoardFormIsActive] = useState(false);
   return (
     // BACKGROUND
     <div className="bg-very-dark-grey h-screen w-screen flex">
@@ -120,19 +113,29 @@ export default function Board() {
               <EditDeleteBoard
                 setDeleteBoardConfirmIsActive={setDeleteBoardConfirmIsActive}
                 setEditDeleteBoardIsActive={setEditDeleteBoardIsActive}
+                setEditBoardFormIsActive={setEditBoardFormIsActive}
               />
             )}
           </div>
         </nav>
         {/* POPUPS */}
-        {boardsSelectionIsActive && <SidebarMobile />}
-        {newTaskFormIsActive && <NewTaskForm />}
-        {taskDetailIsActive && <TaskDetail />}
+        {boardsSelectionIsActive && (
+          <SidebarMobile setNewBoardFormIsActive={setNewBoardFormIsActive} />
+        )}
+
+        {newTaskFormIsActive && (
+          <NewTaskForm
+            isOpen={newTaskFormIsActive}
+            setIsOpen={setNewTaskFormIsActive}
+          />
+        )}
         {deleteBoardConfirmIsActive && (
           <DeleteBoardConfirm
             setDeleteBoardConfirmIsActive={setDeleteBoardConfirmIsActive}
           />
         )}
+        {/* <NewBoardForm /> */}
+        {editBoardFormIsActive && <EditBoardForm />}
 
         {/* VIEWPORT */}
         <section className="w-full h-full flex p-4 pt-6 gap-6 overflow-x-scroll">
@@ -157,6 +160,7 @@ export default function Board() {
           <Image src={IconShowSidebar} alt="icon-show-sidebar" />
         </button>
       )}
+      {taskDetailIsActive && <TaskDetail />}
     </div>
   );
 }
