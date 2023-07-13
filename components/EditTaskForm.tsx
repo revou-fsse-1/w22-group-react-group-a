@@ -18,7 +18,7 @@ export default function EditTaskForm() {
     <div className="bg-black-overlay flex justify-center items-center w-screen h-screen min-h-fit p-4 fixed z-50">
       <form
         action="submit"
-        className="flex flex-col w-full max-w-[480px] h-fit p-6 rounded-md bg-dark-grey"
+        className="flex flex-col w-full max-w-[480px] h-fit p-8 rounded-md bg-dark-grey"
       >
         <h3 className="text-heading-lg mb-6">Edit Task</h3>
         {/* TITLE */}

@@ -3,11 +3,16 @@ import IconBoardWhite from "../assets/icon-board-white.svg";
 import IconBoardPurple from "../assets/icon-board-purple.svg";
 
 import Image from "next/image";
-export default function BoardsSelection() {
+export default function BoardsSelection(props: {
+  setNewBoardFormIsActive: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
+  const showNewBoardForm = () => {
+    props.setNewBoardFormIsActive(true);
+  };
   return (
     <div className="w-screen h-screen bg-black-overlay fixed flex justify-center z-50 top-0 left-0 p-24 md:hidden">
       <div className="pr-6 pb-3 bg-dark-grey absolute rounded-lg min-w-[265px] flex flex-col">
-        <span className="text-medium-grey text-heading-sm mb-4 mt-4 ml-4 ">
+        <span className="text-medium-grey text-heading-sm mb-4 mt-4 ml-6 ">
           ALL BOARDS (3)
         </span>
         {/* ACTIVE */}
@@ -25,7 +30,10 @@ export default function BoardsSelection() {
           Roadmap
         </button>
         {/* CREATE NEW BOARD */}
-        <button className="text-heading-md flex items-center gap-4 w-[100%] px-6 py-4 rounded-r-full text-main-purple">
+        <button
+          onClick={showNewBoardForm}
+          className="text-heading-md flex items-center gap-4 w-[100%] px-6 py-4 rounded-r-full text-main-purple"
+        >
           <Image priority src={IconBoardPurple} alt="icon-board" />+ Create New
           Board
         </button>

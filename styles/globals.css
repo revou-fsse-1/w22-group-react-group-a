@@ -26,4 +26,5 @@ body {
     )
     rgb(var(--background-start-rgb));
   font-family: "Plus Jakarta Sans";
+  background: #20212c;
 }
