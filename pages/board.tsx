@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { supabase } from "@/utils/client";
 
+// ICONS
 import LogoMobile from "../assets/logo-mobile.svg";
 import LogoLight from "../assets/logo-light.svg";
 import IconChevronDown from "../assets/icon-chevron-down.svg";
@@ -9,6 +11,7 @@ import IconPlus from "../assets/icon-plus.svg";
 import IconShowSidebar from "../assets/icon-show-sidebar.svg";
 import IconVerticalEllipsis from "../assets/icon-vertical-ellipsis.svg";
 
+// COMPONENTS
 import Column from "@/components/Column";
 import Sidebar from "@/components/Sidebar";
 import EmptyBoardMessage from "@/components/EmptyBoardMessage";
@@ -21,25 +24,44 @@ import DeleteTaskConfirm from "@/components/DeleteTaskConfirm";
 import DeleteBoardConfirm from "@/components/DeleteBoardConfirm";
 import NewBoardForm from "@/components/NewBoardForm";
 import EditBoardForm from "@/components/EditBoardForm";
+import { log } from "console";
 
 export default function Board() {
   const [boardsSelectionIsActive, setBoardsSelectionIsActive] = useState(false);
   const [activeBoard, setActiveBoard] = useState("");
   const [editDeleteBoardIsActive, setEditDeleteBoardIsActive] = useState(false);
+  const [newTaskFormIsActive, setNewTaskFormIsActive] = useState(false);
+  const [newBoardFormIsActive, setNewBoardFormIsActive] = useState(false);
+  const [taskDetailIsActive, setTaskDetailIsActive] = useState(false);
+  const [editTaskFormIsActive, setEditTaskFormIsActive] = useState(false);
+  const [editBoardFormIsActive, setEditBoardFormIsActive] = useState(false);
+  const [deleteBoardConfirmIsActive, setDeleteBoardConfirmIsActive] =
+    useState(false);
   const toggleEditDeleteBoard = () => {
     setEditDeleteBoardIsActive((current) => !current);
   };
-  const [newTaskFormIsActive, setNewTaskFormIsActive] = useState(false);
-  const [taskDetailIsActive, setTaskDetailIsActive] = useState(false);
-  const [editTaskFormIsActive, setEditTaskFormIsActive] = useState(false);
   const toggleEditTaskForm = () => {
     setEditTaskFormIsActive((current) => !current);
   };
-  const [deleteBoardConfirmIsActive, setDeleteBoardConfirmIsActive] =
-    useState(false);
 
-  const [editBoardFormIsActive, setEditBoardFormIsActive] = useState(false);
-  const [newBoardFormIsActive, setNewBoardFormIsActive] = useState(false);
+  // DATA
+  const [boards, setBoards] = useState({});
+
+  // FETCH
+  async function fetchBoard() {
+    const { data, error } = await supabase
+      .from("users")
+      .select(
+        `boards (board, columns (color, column, tasks (task, subtasks (subtask, is_completed))))`
+      )
+      .eq("email", "nikosetiawanp@gmail.com");
+    if (error) return error;
+    setBoards(data[0].boards);
+  }
+  useEffect(() => {
+    fetchBoard();
+  }, []);
+
   return (
     // BACKGROUND
     <div className="bg-very-dark-grey h-screen w-screen flex">
