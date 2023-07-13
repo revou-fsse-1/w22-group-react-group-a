@@ -24,11 +24,9 @@ import DeleteTaskConfirm from "@/components/DeleteTaskConfirm";
 import DeleteBoardConfirm from "@/components/DeleteBoardConfirm";
 import NewBoardForm from "@/components/NewBoardForm";
 import EditBoardForm from "@/components/EditBoardForm";
-import { log } from "console";
 
 export default function Board() {
-  const [boardsSelectionIsActive, setBoardsSelectionIsActive] = useState(false);
-  const [activeBoard, setActiveBoard] = useState("");
+  const [sidebarIsActive, setSidebarIsActive] = useState(false);
   const [editDeleteBoardIsActive, setEditDeleteBoardIsActive] = useState(false);
   const [newTaskFormIsActive, setNewTaskFormIsActive] = useState(false);
   const [newBoardFormIsActive, setNewBoardFormIsActive] = useState(false);
@@ -45,144 +43,176 @@ export default function Board() {
   };
 
   // DATA
-  const [boards, setBoards] = useState({});
+  const [boardList, setBoardList] = useState([{ id: "", board: "" }]);
+  const [activeBoard, setActiveBoard] = useState("");
+  const [activeBoardId, setActiveBoardId] = useState("");
+  const [columns, setColumns] = useState([]);
 
   // FETCH
-  async function fetchBoard() {
+  async function fetchBoards() {
     const { data, error } = await supabase
       .from("users")
-      .select(
-        `boards (board, columns (color, column, tasks (task, subtasks (subtask, is_completed))))`
-      )
+      .select(`boards (*)`)
       .eq("email", "nikosetiawanp@gmail.com");
     if (error) return error;
-    setBoards(data[0].boards);
+    setBoardList(data[0].boards);
+    setActiveBoard(data[0].boards[0].board);
+    setActiveBoardId(data[0].boards[0].id);
   }
   useEffect(() => {
-    fetchBoard();
+    fetchBoards();
   }, []);
 
+  async function fetchAllColumns() {
+    const { data, error } = await supabase
+      .from("columns")
+      .select("*")
+      .eq("board_id", activeBoardId);
+    if (error) return error;
+    setColumns(data);
+    console.log(data);
+  }
+  useEffect(() => {
+    fetchAllColumns();
+  }, [activeBoardId]);
+
   return (
-    // BACKGROUND
-    <div className="bg-very-dark-grey h-screen w-screen flex">
-      {/* SIDEBAR */}
-      {boardsSelectionIsActive && (
-        <Sidebar setBoardsSelectionIsActive={setBoardsSelectionIsActive} />
-      )}
-
-      {/* NAVBAR AND VIEWPORT CONTAINER */}
-      <div className="w-full flex flex-col">
-        {/* NAVBAR */}
-        <nav className="bg-dark-grey h-[65px] md:min-h-[80px] flex items-center gap-4 md:gap-8 px-4 md:px-6 w-full md:border-b border-lines-dark">
-          {/* LOGO MOBILE*/}
-          <Image
-            className="md:hidden"
-            priority
-            src={LogoMobile}
-            alt="logo-mobile"
+    <>
+      <div className="bg-very-dark-grey h-screen w-screen flex">
+        {/* SIDEBAR */}
+        {sidebarIsActive && (
+          <Sidebar
+            activeBoard={activeBoard}
+            boardList={boardList}
+            setSidebarIsActive={setSidebarIsActive}
+            setActiveBoard={setActiveBoard}
+            setActiveBoardId={setActiveBoardId}
+            setNewBoardFormIsActive={setNewBoardFormIsActive}
           />
-          {/* LOGO TABLET & DESKTOP */}
-          {!boardsSelectionIsActive && (
-            <div className="hidden md:flex flex-col justify-center pr-8 py-6 border-r border-lines-dark h-full">
-              <Image priority src={LogoLight} alt="logo-dark" />
-            </div>
-          )}
+        )}
 
-          {/* BOARD NAME TABLET & DESKTOP */}
-          <span className="hidden md:block text-heading-lg">
-            Platform Launch
-          </span>
-          {/* BOARDS SELECTION BUTTON MOBILE */}
-          <button
-            onClick={() => setBoardsSelectionIsActive(true)}
-            className="relative text-heading-lg text-white flex items-center gap-4 md:hidden"
-          >
-            Platform Launch
+        {/* NAVBAR AND VIEWPORT CONTAINER */}
+        <div className="w-full flex flex-col">
+          {/* NAVBAR */}
+          <nav className="bg-dark-grey h-[65px] md:min-h-[80px] flex items-center gap-4 md:gap-8 px-4 md:px-6 w-full md:border-b border-lines-dark">
+            {/* LOGO MOBILE*/}
             <Image
+              className="md:hidden"
               priority
-              src={boardsSelectionIsActive ? IconChevronUp : IconChevronDown}
-              alt="icon-chevron-down"
+              src={LogoMobile}
+              alt="logo-mobile"
             />
-          </button>
-          <div className="flex justify-center items-center gap-6 ml-auto">
-            {/* ADD NEW TASK MOBILE */}
-            <button
-              onClick={() => setNewTaskFormIsActive(true)}
-              className="bg-main-purple w-[48px] h-[32px] rounded-full text-heading-md flex justify-center items-center hover:cursor-pointer hover:bg-main-purple-hover md:hidden"
-            >
-              <Image priority src={IconPlus} alt="icon-plus" />
-            </button>
-            {/* ADD NEW TASK TABLET & DESKTOP */}
-            <button
-              onClick={() => setNewTaskFormIsActive(true)}
-              className="hidden md:block bg-main-purple text-heading-md p-4 px-6 rounded-full hover:bg-main-purple-hover"
-            >
-              + Add New Task
-            </button>
-            {/* EDIT DELETE TOGGLE BUTTON */}
+            {/* LOGO TABLET & DESKTOP */}
+            {!sidebarIsActive && (
+              <div className="hidden md:flex flex-col justify-center pr-8 py-6 border-r border-lines-dark h-full">
+                <Image priority src={LogoLight} alt="logo-dark" />
+              </div>
+            )}
 
+            {/* BOARD NAME TABLET & DESKTOP */}
+            <span className="hidden md:block text-heading-lg">
+              {activeBoard}
+            </span>
+            {/* BOARDS SELECTION BUTTON MOBILE */}
             <button
-              onClick={toggleEditDeleteBoard}
-              className="hover:cursor-pointer relative h-full"
+              onClick={() => setSidebarIsActive(true)}
+              className="relative text-heading-lg text-white flex items-center gap-4 md:hidden"
             >
+              {activeBoard}
               <Image
                 priority
-                src={IconVerticalEllipsis}
-                alt="icon-vertical-ellipsis"
+                src={sidebarIsActive ? IconChevronUp : IconChevronDown}
+                alt="icon-chevron-down"
               />
             </button>
-            {editDeleteBoardIsActive && (
-              <EditDeleteBoard
-                setDeleteBoardConfirmIsActive={setDeleteBoardConfirmIsActive}
-                setEditDeleteBoardIsActive={setEditDeleteBoardIsActive}
-                setEditBoardFormIsActive={setEditBoardFormIsActive}
-              />
-            )}
-          </div>
-        </nav>
-        {/* POPUPS */}
-        {boardsSelectionIsActive && (
-          <SidebarMobile setNewBoardFormIsActive={setNewBoardFormIsActive} />
-        )}
+            <div className="flex justify-center items-center gap-6 ml-auto">
+              {/* ADD NEW TASK MOBILE */}
+              <button
+                onClick={() => setNewTaskFormIsActive(true)}
+                className="bg-main-purple w-[48px] h-[32px] rounded-full text-heading-md flex justify-center items-center hover:cursor-pointer hover:bg-main-purple-hover md:hidden"
+              >
+                <Image priority src={IconPlus} alt="icon-plus" />
+              </button>
+              {/* ADD NEW TASK TABLET & DESKTOP */}
+              <button
+                onClick={() => setNewTaskFormIsActive(true)}
+                className="hidden md:block bg-main-purple text-heading-md p-4 px-6 rounded-full hover:bg-main-purple-hover"
+              >
+                + Add New Task
+              </button>
+              {/* EDIT DELETE TOGGLE BUTTON */}
 
-        {newTaskFormIsActive && (
-          <NewTaskForm
-            isOpen={newTaskFormIsActive}
-            setIsOpen={setNewTaskFormIsActive}
-          />
-        )}
-        {deleteBoardConfirmIsActive && (
-          <DeleteBoardConfirm
-            setDeleteBoardConfirmIsActive={setDeleteBoardConfirmIsActive}
-          />
-        )}
-        {/* <NewBoardForm /> */}
-        {editBoardFormIsActive && <EditBoardForm />}
+              <button
+                onClick={toggleEditDeleteBoard}
+                className="hover:cursor-pointer relative h-full"
+              >
+                <Image
+                  priority
+                  src={IconVerticalEllipsis}
+                  alt="icon-vertical-ellipsis"
+                />
+              </button>
+              {editDeleteBoardIsActive && (
+                <EditDeleteBoard
+                  setDeleteBoardConfirmIsActive={setDeleteBoardConfirmIsActive}
+                  setEditDeleteBoardIsActive={setEditDeleteBoardIsActive}
+                  setEditBoardFormIsActive={setEditBoardFormIsActive}
+                />
+              )}
+            </div>
+          </nav>
+          {/* POPUPS */}
+          {sidebarIsActive && (
+            <SidebarMobile
+              activeBoard={activeBoard}
+              boardList={boardList}
+              setSidebarIsActive={setSidebarIsActive}
+              setActiveBoard={setActiveBoard}
+              setActiveBoardId={setActiveBoardId}
+              setNewBoardFormIsActive={setNewBoardFormIsActive}
+            />
+          )}
 
-        {/* VIEWPORT */}
-        <section className="w-full h-full flex p-4 pt-6 gap-6 overflow-x-scroll">
-          {/* COLUMN */}
-          <Column setTaskDetailIsActive={setTaskDetailIsActive} />
-          <Column setTaskDetailIsActive={setTaskDetailIsActive} />
-          <Column setTaskDetailIsActive={setTaskDetailIsActive} />
-          <button className="flex justify-center items-center text-heading-xl text-medium-grey w-[280px] min-w-[280px] h-[815px] bg-gradient-to-b from-dark-grey/25 to-dark-grey/10 rounded-md mt-10">
-            + New Column
+          {newTaskFormIsActive && (
+            <NewTaskForm
+              isOpen={newTaskFormIsActive}
+              setIsOpen={setNewTaskFormIsActive}
+            />
+          )}
+          {deleteBoardConfirmIsActive && (
+            <DeleteBoardConfirm
+              setDeleteBoardConfirmIsActive={setDeleteBoardConfirmIsActive}
+            />
+          )}
+
+          {/* VIEWPORT */}
+          <section className="w-full h-full flex p-4 pt-6 gap-6 overflow-x-scroll">
+            {/* COLUMN */}
+            {/* {mappedColumns} */}
+            <Column setTaskDetailIsActive={setTaskDetailIsActive} />
+            <Column setTaskDetailIsActive={setTaskDetailIsActive} />
+            <Column setTaskDetailIsActive={setTaskDetailIsActive} />
+            <button className="flex justify-center items-center text-heading-xl text-medium-grey w-[280px] min-w-[280px] h-[815px] bg-gradient-to-b from-dark-grey/25 to-dark-grey/10 rounded-md mt-10">
+              + New Column
+            </button>
+            {/* EMPTY BOARD MESSAGE */}
+            {/* <EmptyBoardMessage /> */}
+          </section>
+        </div>
+
+        {/* BOTTOM LEFT BUTTON */}
+        {!sidebarIsActive && (
+          <button
+            onClick={() => setSidebarIsActive((current) => !current)}
+            className=" hidden md:block p-5 rounded-r-full bg-main-purple z-40 fixed bottom-8"
+          >
+            <Image src={IconShowSidebar} alt="icon-show-sidebar" />
           </button>
-          {/* EMPTY BOARD MESSAGE */}
-          {/* <EmptyBoardMessage /> */}
-        </section>
+        )}
+        {taskDetailIsActive && <TaskDetail />}
+        {newBoardFormIsActive && <NewBoardForm />}
+        {editBoardFormIsActive && <EditBoardForm />}
       </div>
-
-      {/* BOTTOM LEFT BUTTON */}
-      {!boardsSelectionIsActive && (
-        <button
-          onClick={() => setBoardsSelectionIsActive((current) => !current)}
-          className=" hidden md:block p-5 rounded-r-full bg-main-purple z-40 fixed bottom-8"
-        >
-          <Image src={IconShowSidebar} alt="icon-show-sidebar" />
-        </button>
-      )}
-      {taskDetailIsActive && <TaskDetail />}
-    </div>
+    </>
   );
 }
