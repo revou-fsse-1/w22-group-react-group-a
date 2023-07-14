@@ -5,6 +5,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Link from 'next/link';
 import React from 'react';
+import { supabase } from '@/utils/client';
+import { AuthError } from '@supabase/supabase-js';
 import EmailVerification from '@/components/EmailVerification';
 
 interface LoginForm {
@@ -47,23 +49,17 @@ function Login() {
 
   const handleLogin: SubmitHandler<LoginForm> = async (data) => {
     try {
-      const response = await fetch('link menuju supabase', {
-        method: 'POST',
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+      const response = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
       });
-      if (response.ok) {
-        setShowEmailVerification(true);
-        navigate('/board');
-      } else {
-        const { error } = await response.json();
-        throw new Error('Failed to login. Please try again.');
+
+      if (response.error) {
+        throw new Error((response.error as AuthError).message);
       }
-    } catch (error) {
-      console.error(error);
+      router.push('/board');
+    } catch (error: any) {
+      console.error('Login error:', error.message);
     }
   };
 
@@ -78,7 +74,7 @@ function Login() {
               type="text"
               placeholder="Enter your email..."
               {...register('email')}
-              className="border border-light-grey px-3 py-2 rounded w-full text-body-md text-white"
+              className="border border-light-grey px-3 py-2 rounded w-full text-body-md text-dark-grey"
             />
             {errors.email && <p>{errors.email.message}</p>}
           </div>
@@ -88,7 +84,7 @@ function Login() {
               type="password"
               placeholder="Enter your password..."
               {...register('password')}
-              className="border border-light-grey px-3 py-2 rounded w-full text-body-md text-white"
+              className="border border-light-grey px-3 py-2 rounded w-full text-body-md text-dark-grey"
             />
             {errors.password && <p>{errors.password.message}</p>}
           </div>
