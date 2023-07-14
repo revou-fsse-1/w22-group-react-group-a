@@ -4,6 +4,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup'
 import Link from 'next/link';
 import React from 'react';
+import { supabase } from '../../utils/client';
+import { AuthError } from '@supabase/supabase-js';
+import { useState } from 'react';
+import EmailVerification from '@/components/EmailVerification';
 
 interface RegisterForm {
     email: string;
@@ -19,31 +23,32 @@ const schema = yup.object().shape({
 });
 
 const Register = () => {
-    const { register, handleSubmit, formState: { errors } } = useForm<RegisterForm>({
-        resolver: yupResolver(schema),
-    });
-    const router = useRouter();
-    const navigate = router.push;
-    const handleRegister: SubmitHandler<RegisterForm> = async (data) => {
-        try {
-            const response = await fetch('link menuju supabase', {
-                method: 'POST',
-                mode: 'cors',
-                headers: {
-                    'Content-Type:': 'application/json',
-                },
-                body: JSON.stringify(data),
-            });
-            if (response.ok) {
-                navigate('/login');
-            } else {
-                const { error } = await response.json();
-                throw new Error('Error encountered. Please try again.')
-            }
-        } catch (error) {
-            console.error(error);
-        };
-    };
+  const { register, handleSubmit, formState: { errors } } = useForm<RegisterForm>({
+    resolver: yupResolver(schema),
+  });
+  const router = useRouter();
+  const navigate = router.push;
+  const [showEmailVerification, setShowEmailVerification] = useState(false);
+
+  const handleRegister: SubmitHandler<RegisterForm> = async (data) => {
+    try {
+      const response = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+      });
+
+      if (response.error) {
+        throw new Error((response.error as AuthError).message);
+      }
+
+      if (response.data != null) {
+        setShowEmailVerification(true);
+        await navigate('/auth/login?registered=true');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
     return (
         <div className='bg-very-dark-grey min-h-screen flex items-center justify-center'>
@@ -56,17 +61,17 @@ const Register = () => {
                         type="text"
                         placeholder="Enter your email..."
                         {...register('email')}
-                        className='border border-light-grey px-3 py-2 rounded w-full text-body-md text-white'
+                        className='border border-light-grey px-3 py-2 rounded w-full text-body-md text-dark-grey'
                         />
                         {errors.email && <p>{errors.email.message}</p>}
                     </div>
                     <div className='mb-4'>
                         <label className='block mb-2 text-heading-md'>Password:</label>
                         <input
-                        type="text"
+                        type="password"
                         placeholder="Enter your password..."
                         {...register('password')}
-                        className='border border-light-grey px-3 py-2 rounded w-full text-body-md text-white'
+                        className='border border-light-grey px-3 py-2 rounded w-full text-body-md text-dark-grey'
                         />
                         {errors.password && <p>{errors.password.message}</p>}
                     </div>
@@ -81,6 +86,7 @@ const Register = () => {
                     </Link>
                 </span>
             </div>
+            {showEmailVerification && <EmailVerification onClose={() => setShowEmailVerification(false)} />}
         </div>
     )
 }
