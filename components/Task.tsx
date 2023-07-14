@@ -2,20 +2,42 @@ import TaskDetail from "@/components/TaskDetail";
 import { useState } from "react";
 
 export default function Task(props: {
+  key: string;
+  id: string;
+  task: string;
+  subtasks: [object];
+  description: string;
   setTaskDetailIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const toggleTaskDetail = () => {
-    props.setTaskDetailIsActive((current) => !current);
-  };
+  const [taskDetailIsActive, setTaskDetailIsActive] = useState(false);
+
   return (
     <>
       <button
-        onClick={toggleTaskDetail}
-        className="bg-dark-grey rounded-lg px-4 py-6 flex flex-col hover:cursor-pointer"
+        key={props.task.id}
+        onClick={() => setTaskDetailIsActive(true)}
+        className="bg-dark-grey rounded-lg px-4 py-6 flex flex-col hover:cursor-pointer hover:bg-lines-dark mb-4"
       >
-        <h2 className="text-heading-md mb-2">Build UI for onboarding flow</h2>
-        <p className="text-body-md text-medium-grey">0 of 3 subtasks</p>
+        <h2 className="text-heading-md mb-2 text-left">{props.task}</h2>
+        <p className="text-body-md text-medium-grey">
+          (
+          {
+            props.subtasks.filter((subtask) => subtask.is_completed == true)
+              .length
+          }
+          of {props.subtasks.length}) &nbsp; subtasks
+        </p>
       </button>
+
+      {taskDetailIsActive && (
+        <TaskDetail
+          key={props.id}
+          id={props.id}
+          task={props.task}
+          subtasks={props.subtasks}
+          description={props.description}
+        />
+      )}
     </>
   );
 }

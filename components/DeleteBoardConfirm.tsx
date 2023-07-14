@@ -13,12 +13,12 @@ export default function DeleteBoardConfirm(props: {
           action will remove all columns and tasks and cannot be reversed.
         </p>
         <div className="flex flex-col md:flex-row gap-4">
-          <button className="text-body-md h-[40px] w-full md:max-w-[200px] rounded-full text-white-custom bg-red-custom">
+          <button className="text-body-md h-[40px] w-full md:max-w-[200px] rounded-full text-white-custom bg-red-custom hover:bg-red-custom-hover">
             Delete
           </button>
           <button
             onClick={hideDeleteBoardConfirm}
-            className="text-body-md h-[40px] w-full md:max-w-[200px] rounded-full text-main-purple bg-white-custom"
+            className="text-body-md h-[40px] w-full md:max-w-[200px] rounded-full text-main-purple bg-white-custom hover:bg-lines-light"
           >
             Cancel
           </button>

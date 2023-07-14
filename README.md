@@ -1,38 +1,40 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Product Feedback App
 
-## Getting Started
+This is group project about task management app, design by Frontend Mentor.
 
-First, run the development server:
+Project demo : Coming soon
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+## Overview
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+<img src='https://res.cloudinary.com/dz209s6jk/image/upload/v1654885206/Challenges/jc26dvdz8ou8mvbu08uh.jpg' alt='image'>
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### Built with
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+[![My Skills](https://skillicons.dev/icons?i=html,tailwind,ts,react,next,supabase,postgres&perline=10)](https://skillicons.dev)
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+### Features
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- View the optimal layout for the app depending on their device's screen size
+- See hover states for all interactive elements on the page
+- Create, read, update, and delete boards and tasks
+- Receive form validations when trying to create/edit boards and tasks
+- Mark subtasks as complete and move tasks between columns
+- Hide/show the board sidebar
 
-## Learn More
+### What I learned
 
-To learn more about Next.js, take a look at the following resources:
+This is challenging project, even as a group project. We gained deeper understanding of React, NextJS, and Supabase database design.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Useful resources
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- [react.dev/learn](https://react.dev/learn) - This helped me when I need to search something about react
+- [supabasee.com/docs](https://supabase.com/docs/reference/javascript/initializing) - This helped me when I need to search something about supabase
 
-## Deploy on Vercel
+## Roles
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- [Niko Setiawan P](https://github.com/nikosetiawanp) - Frontend Engineer
+- [Mahdi Harish Rahman](https://github.com/mahdiharish) - Frontend Engineer
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Acknowledgments
+
+Special thanks to Frontend Mentor for providing the UI design for this project.

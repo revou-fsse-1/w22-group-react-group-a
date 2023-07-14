@@ -29,10 +29,10 @@ export default function Board() {
   const [sidebarIsActive, setSidebarIsActive] = useState(false);
   const [editDeleteBoardIsActive, setEditDeleteBoardIsActive] = useState(false);
   const [newTaskFormIsActive, setNewTaskFormIsActive] = useState(false);
+  const [editBoardFormIsActive, setEditBoardFormIsActive] = useState(false);
   const [newBoardFormIsActive, setNewBoardFormIsActive] = useState(false);
   const [taskDetailIsActive, setTaskDetailIsActive] = useState(false);
   const [editTaskFormIsActive, setEditTaskFormIsActive] = useState(false);
-  const [editBoardFormIsActive, setEditBoardFormIsActive] = useState(false);
   const [deleteBoardConfirmIsActive, setDeleteBoardConfirmIsActive] =
     useState(false);
   const toggleEditDeleteBoard = () => {
@@ -70,11 +70,18 @@ export default function Board() {
       .eq("board_id", activeBoardId);
     if (error) return error;
     setColumns(data);
-    console.log(data);
   }
   useEffect(() => {
     fetchAllColumns();
   }, [activeBoardId]);
+
+  const mappedColumn = columns.map((column) => (
+    <Column
+      key={column.id}
+      data={column}
+      setTaskDetailIsActive={setTaskDetailIsActive}
+    />
+  ));
 
   return (
     <>
@@ -186,13 +193,11 @@ export default function Board() {
           )}
 
           {/* VIEWPORT */}
-          <section className="w-full h-full flex p-4 pt-6 gap-6 overflow-x-scroll">
+          <section className="w-full h-full flex p-4 pt-6 gap-6 overflow-x-scroll mb-6">
             {/* COLUMN */}
-            {/* {mappedColumns} */}
-            <Column setTaskDetailIsActive={setTaskDetailIsActive} />
-            <Column setTaskDetailIsActive={setTaskDetailIsActive} />
-            <Column setTaskDetailIsActive={setTaskDetailIsActive} />
-            <button className="flex justify-center items-center text-heading-xl text-medium-grey w-[280px] min-w-[280px] h-[815px] bg-gradient-to-b from-dark-grey/25 to-dark-grey/10 rounded-md mt-10">
+            {mappedColumn}
+
+            <button className="flex justify-center items-center text-heading-xl text-medium-grey w-[280px] min-w-[280px] h-[815px] bg-gradient-to-b from-dark-grey/25 to-dark-grey/10 rounded-md mt-6">
               + New Column
             </button>
             {/* EMPTY BOARD MESSAGE */}
@@ -204,7 +209,7 @@ export default function Board() {
         {!sidebarIsActive && (
           <button
             onClick={() => setSidebarIsActive((current) => !current)}
-            className=" hidden md:block p-5 rounded-r-full bg-main-purple z-40 fixed bottom-8"
+            className=" hidden md:block p-5 rounded-r-full bg-main-purple z-40 fixed bottom-8 hover:scale-105 transition-all shadow-lg"
           >
             <Image src={IconShowSidebar} alt="icon-show-sidebar" />
           </button>
