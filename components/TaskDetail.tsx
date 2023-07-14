@@ -11,8 +11,19 @@ import StatusList from "./StatusList";
 import EditDeleteTask from "./EditDeleteTask";
 import DeleteTaskConfirm from "./DeleteTaskConfirm";
 import EditTaskForm from "./EditTaskForm";
+import Subtask from "./Subtask";
+import { log } from "console";
 
-export default function TaskDetail() {
+export default function TaskDetail(props: {
+  key: string;
+  id: string;
+  task: string;
+  subtasks: [object];
+  description: string;
+}) {
+  const [completedTaskCount, setCompletedTaskCount] = useState(
+    props.subtasks.filter((subtask) => subtask.is_completed == true).length
+  );
   const [statusListIsActive, setStatusListIsActive] = useState(false);
   const [editTaskFormIsActive, setEditTaskFormIsActive] = useState(false);
   const [editDeleteTaskIsActive, setEditDeleteTaskIsActive] = useState(false);
@@ -25,18 +36,25 @@ export default function TaskDetail() {
     setEditDeleteTaskIsActive((current) => !current);
   };
 
+  const mappedSubtasks = props.subtasks.map((subtask) => (
+    <Subtask
+      key={subtask.id}
+      id={subtask.id}
+      subtask={subtask.subtask}
+      is_completed={subtask.is_completed}
+      setCompletedTaskCount={setCompletedTaskCount}
+    />
+  ));
+
   return (
     <>
-      <div className="bg-black-overlay flex justify-center items-center w-screen h-screen p-4 fixed z-50">
+      <div className="bg-black-overlay flex justify-center items-center w-screen h-screen p-4 fixed top-0 left-0 z-50">
         <form
           action="submit"
           className="flex flex-col w-full max-w-[480px] h-fit p-6 rounded-md bg-dark-grey"
         >
           <div className="mb-6 gap-8 flex justify-between items-center">
-            <h3 className="text-heading-lg">
-              Research pricing points of various competitors and trial different
-              business models
-            </h3>
+            <h3 className="text-heading-lg">{props.task}</h3>
             <button
               onClick={toggleEditDeleteTask}
               className="relative"
@@ -57,36 +75,20 @@ export default function TaskDetail() {
             </button>
           </div>
           <p className="text-body-lg mb-6 text-medium-grey">
-            We know what we're planning to build for version one. Now we need to
-            finalise the first pricing model we'll use. Keep iterating the
-            subtasks until we have a coherent proposition.
+            {props.description}
           </p>
 
           {/* SUBTASKS */}
-          <label htmlFor="subtasks" className="mb-2 text-body-md">
-            Subtasks (2 of 3)
+          <label htmlFor="subtasks" className="mb-4 text-body-md">
+            Subtasks ({completedTaskCount} &nbsp; of &nbsp;{" "}
+            {props.subtasks.length})
           </label>
 
           {/* SUBTASKS CONTAINER */}
           <div className="flex flex-col gap-2 mb-6">
-            {/* DONE */}
-            <div className="bg-very-dark-grey px-4 py-6 gap-6 rounded-md flex items-center">
-              <button className="bg-main-purple w-[16px] min-w-[16px] h-[16px] flex justify-center items-center rounded-sm">
-                <Image src={IconCheck} alt="icon-check" />
-              </button>
-              <p className="text-body-md line-through text-white-custom/50">
-                Research competitor pricing and business models
-              </p>
-            </div>
-            {/* NOT DONE */}
-            <div className="bg-very-dark-grey px-4 py-6 gap-6 rounded-md flex items-center">
-              <button className="bg-white-custom w-[16px] min-w-[16px] h-[16px] flex justify-center items-center rounded-sm"></button>
-              <p className="text-body-md text-white-custom">
-                Surveying and testing
-              </p>
-            </div>
+            {mappedSubtasks}
             {/* CHECKBOX */}
-            <div className="flex items-center bg-very-dark-grey min-h-[64px] px-4 py-6 rounded-md gap-6">
+            {/* <div className="flex items-center bg-very-dark-grey min-h-[64px] px-4 py-6 rounded-md gap-6">
               <input
                 className="w-[16px] h-[16px] rounded-md peer/draft accent-main-purple hover:cursor-pointer"
                 type="checkbox"
@@ -100,7 +102,7 @@ export default function TaskDetail() {
               >
                 Draft
               </label>
-            </div>
+            </div> */}
           </div>
 
           <label htmlFor="status" className="mb-2 text-body-md">
