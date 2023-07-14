@@ -10,8 +10,10 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({ onClose }) => {
       <div className="bg-main-purple p-8 rounded-lg">
         <h2 className="text-2xl font-bold text-white mb-4">Email Verification</h2>
         <p className="text-lg text-white">Please check your email for verification.</p>
+        <button className="text-white bg-main-purple hover:bg-white hover:text-main-purple px-4 py-2 rounded-lg mt-4" onClick={onClose}>
+          Close
+        </button>
       </div>
-      <div className="absolute inset-0" onClick={onClose}></div>
     </div>
   );
 };

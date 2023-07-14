@@ -23,15 +23,13 @@ const schema = yup.object().shape({
 });
 
 const Register = () => {
-  const [showEmailVerification, setShowEmailVerification] = useState(false);
-    const handleShowEmailVerification = () => {
-    setShowEmailVerification(true);
-  };
   const { register, handleSubmit, formState: { errors } } = useForm<RegisterForm>({
     resolver: yupResolver(schema),
   });
   const router = useRouter();
   const navigate = router.push;
+  const [showEmailVerification, setShowEmailVerification] = useState(false);
+
   const handleRegister: SubmitHandler<RegisterForm> = async (data) => {
     try {
       const response = await supabase.auth.signUp({
@@ -44,8 +42,8 @@ const Register = () => {
       }
 
       if (response.data != null) {
-        // Registration successful, navigate to the login page
-        navigate('/auth/login');
+        setShowEmailVerification(true);
+        await navigate('/auth/login?registered=true');
       }
     } catch (error) {
       console.error(error);
@@ -87,16 +85,8 @@ const Register = () => {
                         Login here
                     </Link>
                 </span>
-                        <button
-          onClick={handleShowEmailVerification}
-          className="bg-main-purple hover:bg-main-purple-hover text-white rounded px-4 py-2"
-        >
-          Show Email Verification
-        </button>
-                {showEmailVerification && (
-        <EmailVerification onClose={() => setShowEmailVerification(false)} />
-      )}
             </div>
+            {showEmailVerification && <EmailVerification onClose={() => setShowEmailVerification(false)} />}
         </div>
     )
 }
