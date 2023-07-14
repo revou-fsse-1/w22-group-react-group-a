@@ -6,6 +6,8 @@ import Link from 'next/link';
 import React from 'react';
 import { supabase } from '../../utils/client';
 import { AuthError } from '@supabase/supabase-js';
+import { useState } from 'react';
+import EmailVerification from '@/components/EmailVerification';
 
 interface RegisterForm {
     email: string;
@@ -21,6 +23,10 @@ const schema = yup.object().shape({
 });
 
 const Register = () => {
+  const [showEmailVerification, setShowEmailVerification] = useState(false);
+    const handleShowEmailVerification = () => {
+    setShowEmailVerification(true);
+  };
   const { register, handleSubmit, formState: { errors } } = useForm<RegisterForm>({
     resolver: yupResolver(schema),
   });
@@ -81,6 +87,15 @@ const Register = () => {
                         Login here
                     </Link>
                 </span>
+                        <button
+          onClick={handleShowEmailVerification}
+          className="bg-main-purple hover:bg-main-purple-hover text-white rounded px-4 py-2"
+        >
+          Show Email Verification
+        </button>
+                {showEmailVerification && (
+        <EmailVerification onClose={() => setShowEmailVerification(false)} />
+      )}
             </div>
         </div>
     )
