@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import Link from 'next/link';
-import React from 'react';
-import { supabase } from '@/utils/client';
-import { AuthError } from '@supabase/supabase-js';
-import EmailVerification from '@/components/EmailVerification';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import Link from "next/link";
+import React from "react";
+import { supabase } from "@/utils/client";
+import { AuthError } from "@supabase/supabase-js";
+import EmailVerification from "@/components/EmailVerification";
 
 interface LoginForm {
   email: string;
@@ -15,26 +15,26 @@ interface LoginForm {
 }
 
 const schema = yup.object().shape({
-  email: yup.string().required('Please fill in the name.'),
+  email: yup.string().required("Please fill in the name."),
   password: yup
     .string()
-    .required('Please fill in the password.')
-    .min(8, 'Password must be at least 8 characters.')
+    .required("Please fill in the password.")
+    .min(8, "Password must be at least 8 characters.")
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
-      'Password must contain at least one number, and uppercase and lowercase letters.'
+      "Password must contain at least one number, and uppercase and lowercase letters."
     ),
 });
 
 function Login() {
   const router = useRouter();
   const navigate = router.push;
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [showEmailVerification, setShowEmailVerification] = useState(false);
 
   useEffect(() => {
     const { registered } = router.query;
-    if (registered === 'true') {
+    if (registered === "true") {
       setShowEmailVerification(true);
     }
   }, [router.query]);
@@ -57,51 +57,79 @@ function Login() {
       if (response.error) {
         throw new Error((response.error as AuthError).message);
       }
-      router.push('/board');
+      router.push("/board");
     } catch (error: any) {
-      console.error('Login error:', error.message);
+      console.error("Login error:", error.message);
     }
   };
 
   return (
-    <div className="bg-very-dark-grey min-h-screen flex items-center justify-center">
-      <div className="bg-dark-grey p-6 rounded shadow-lg">
-        <h1 className="text-heading-lg mb-4">Login Form</h1>
-        <form onSubmit={handleSubmit(handleLogin)}>
-          <div className="mb-4">
-            <label className="block mb-2 text-heading-md">Email:</label>
+    <div className="bg-very-dark-grey min-h-screen flex items-center justify-center p-4">
+      <div className="bg-dark-grey p-6 rounded-md w-full max-w-[480px] flex flex-col items-center">
+        <h1 className="text-heading-lg mb-6 self-start">Login</h1>
+        <form
+          className="flex flex-col w-full"
+          onSubmit={handleSubmit(handleLogin)}
+        >
+          <div className="mb-6">
+            <label className="block mb-2 text-body-md">Email</label>
             <input
-              type="text"
+              type="email"
+              mt-1
               placeholder="Enter your email..."
-              {...register('email')}
-              className="border border-light-grey px-3 py-2 rounded w-full text-body-md text-dark-grey"
+              {...register("email")}
+              className={`outline-none text-white-custom border ${
+                errors.email
+                  ? "border-red-custom focus:border-red-custom"
+                  : "border-lines-dark"
+              }  focus:border-main-purple bg-dark-grey px-3 py-2 rounded w-full text-body-md h-[40px] placeholder:text-white-custom/25`}
             />
-            {errors.email && <p>{errors.email.message}</p>}
+            {errors.email && (
+              <p className="text-body-md text-red-custom mt-1">
+                {errors.email.message}
+              </p>
+            )}
           </div>
-          <div className="mb-4">
-            <label className="block mb-2 text-heading-md">Password:</label>
+          <div className="mb-6">
+            <label className="block mb-2 text-body-md">Password</label>
             <input
               type="password"
               placeholder="Enter your password..."
-              {...register('password')}
-              className="border border-light-grey px-3 py-2 rounded w-full text-body-md text-dark-grey"
+              {...register("password")}
+              className={`outline-none text-white-custom border ${
+                errors.password
+                  ? "border-red-custom focus:border-red-custom"
+                  : "border-lines-dark"
+              }  focus:border-main-purple bg-dark-grey px-3 py-2 rounded w-full text-body-md h-[40px] placeholder:text-white-custom/25`}
             />
-            {errors.password && <p>{errors.password.message}</p>}
+            {errors.password && (
+              <p className="text-body-md text-red-custom mt-1">
+                {errors.password.message}
+              </p>
+            )}
           </div>
-          <button type="submit" className="bg-main-purple hover:bg-main-purple-hover text-white rounded px-4 py-2">
+          <button
+            type="submit"
+            className="bg-main-purple hover:bg-main-purple-hover text-body-md rounded-full px-4 py-2 h-[40px] w-full mb-4"
+          >
             Login
           </button>
         </form>
-        <span className="text-lines-light text-body-md">Don't have account?</span>
-        <span>
-          <Link href="/auth/register" className="text-body-md">
+        <span className="text-lines-light text-body-md">
+          Don't have account? &nbsp;
+          <Link
+            href="/auth/register"
+            className="text-main-purple hover:underline hover:text-main-purple-hover"
+          >
             Register here
           </Link>
         </span>
       </div>
-      {showEmailVerification && <EmailVerification onClose={() => setShowEmailVerification(false)} />}
+      {showEmailVerification && (
+        <EmailVerification onClose={() => setShowEmailVerification(false)} />
+      )}
     </div>
   );
 }
 
-export default Login
+export default Login;
