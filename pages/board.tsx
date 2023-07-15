@@ -193,7 +193,7 @@ export default function Board() {
           )}
 
           {/* VIEWPORT */}
-          <section className="w-full h-full flex p-4 pt-6 gap-6 overflow-x-scroll mb-6">
+          <section className="w-full h-full flex p-4 pt-6 gap-6 overflow-auto mb-6">
             {/* COLUMN */}
             {mappedColumn}
 
