@@ -105,6 +105,7 @@ const Register = () => {
               </p>
             )}
           </div>
+
           <button
             type="submit"
             className="bg-main-purple hover:bg-main-purple-hover text-body-md rounded-full px-4 py-2 h-[40px] w-full mb-4"

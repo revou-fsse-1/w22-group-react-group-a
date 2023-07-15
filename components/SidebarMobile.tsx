@@ -1,16 +1,16 @@
 import IconBoard from "../assets/icon-board.svg";
 import IconBoardWhite from "../assets/icon-board-white.svg";
 import IconBoardPurple from "../assets/icon-board-purple.svg";
-
 import Image from "next/image";
+
+interface Board {
+  id: string;
+  board: string;
+}
+
 export default function BoardsSelection(props: {
   activeBoard: string;
-  boardList: [
-    {
-      id: string;
-      board: string;
-    }
-  ];
+  boardList: Board[];
   setSidebarIsActive: React.Dispatch<React.SetStateAction<boolean>>;
   setActiveBoard: React.Dispatch<React.SetStateAction<string>>;
   setActiveBoardId: React.Dispatch<React.SetStateAction<string>>;

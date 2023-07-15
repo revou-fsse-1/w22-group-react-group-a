@@ -25,6 +25,13 @@ import DeleteBoardConfirm from "@/components/DeleteBoardConfirm";
 import NewBoardForm from "@/components/NewBoardForm";
 import EditBoardForm from "@/components/EditBoardForm";
 
+interface Column {
+  board_id: string;
+  color: string;
+  column: string;
+  id: string;
+}
+
 export default function Board() {
   const [sidebarIsActive, setSidebarIsActive] = useState(false);
   const [editDeleteBoardIsActive, setEditDeleteBoardIsActive] = useState(false);
@@ -46,7 +53,7 @@ export default function Board() {
   const [boardList, setBoardList] = useState([{ id: "", board: "" }]);
   const [activeBoard, setActiveBoard] = useState("");
   const [activeBoardId, setActiveBoardId] = useState("");
-  const [columns, setColumns] = useState([]);
+  const [columns, setColumns] = useState<Column[]>([]);
 
   // FETCH
   async function fetchBoards() {
@@ -214,7 +221,6 @@ export default function Board() {
             <Image src={IconShowSidebar} alt="icon-show-sidebar" />
           </button>
         )}
-        {taskDetailIsActive && <TaskDetail />}
         {newBoardFormIsActive && <NewBoardForm />}
         {editBoardFormIsActive && <EditBoardForm />}
       </div>

@@ -5,14 +5,13 @@ import IconBoardWhite from "../assets/icon-board-white.svg";
 import IconBoardPurple from "../assets/icon-board-purple.svg";
 import IconHideSidebar from "../assets/icon-hide-sidebar.svg";
 
+interface Board {
+  id: string;
+  board: string;
+}
 export default function Sidebar(props: {
   activeBoard: string;
-  boardList: [
-    {
-      id: string;
-      board: string;
-    }
-  ];
+  boardList: Board[];
   setSidebarIsActive: React.Dispatch<React.SetStateAction<boolean>>;
   setActiveBoard: React.Dispatch<React.SetStateAction<string>>;
   setActiveBoardId: React.Dispatch<React.SetStateAction<string>>;

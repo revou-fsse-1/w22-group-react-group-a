@@ -12,7 +12,6 @@ import EditDeleteTask from "./EditDeleteTask";
 import DeleteTaskConfirm from "./DeleteTaskConfirm";
 import EditTaskForm from "./EditTaskForm";
 import Subtask from "./Subtask";
-import { log } from "console";
 
 export default function TaskDetail(props: {
   key: string;
@@ -85,25 +84,7 @@ export default function TaskDetail(props: {
           </label>
 
           {/* SUBTASKS CONTAINER */}
-          <div className="flex flex-col gap-2 mb-6">
-            {mappedSubtasks}
-            {/* CHECKBOX */}
-            {/* <div className="flex items-center bg-very-dark-grey min-h-[64px] px-4 py-6 rounded-md gap-6">
-              <input
-                className="w-[16px] h-[16px] rounded-md peer/draft accent-main-purple hover:cursor-pointer"
-                type="checkbox"
-                id="draft"
-                name="subtask"
-                value={"Surveying and testing"}
-              />
-              <label
-                className="text-body-md rounded-md text-white-custom hover:cursor-pointer peer-checked/draft:line-through peer-checked/draft:text-white-custom/50"
-                htmlFor="draft"
-              >
-                Draft
-              </label>
-            </div> */}
-          </div>
+          <div className="flex flex-col gap-2 mb-6">{mappedSubtasks}</div>
 
           <label htmlFor="status" className="mb-2 text-body-md">
             Current Status
