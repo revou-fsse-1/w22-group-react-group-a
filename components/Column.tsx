@@ -8,12 +8,23 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Task from "./Task";
 
+interface Task {
+  id: string;
+  task: string;
+  description: string;
+  subtasks: object[] | any;
+}
+
 export default function Column(props: {
   key: string;
-  data: object;
+  data: {
+    id: string;
+    column: string;
+    color: string;
+  };
   setTaskDetailIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
 
   async function fetchTasks() {
     const { data, error } = await supabase
@@ -38,6 +49,7 @@ export default function Column(props: {
       task={task.task}
       subtasks={task.subtasks}
       description={task.description}
+      setTaskDetailIsActive={props.setTaskDetailIsActive}
     />
   ));
 

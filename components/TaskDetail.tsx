@@ -17,7 +17,13 @@ export default function TaskDetail(props: {
   key: string;
   id: string;
   task: string;
-  subtasks: [object];
+  subtasks: [
+    {
+      id: string;
+      is_completed: boolean;
+      subtask: string;
+    }
+  ];
   description: string;
 }) {
   const [completedTaskCount, setCompletedTaskCount] = useState(
