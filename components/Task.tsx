@@ -2,7 +2,6 @@ import TaskDetail from "@/components/TaskDetail";
 import { useState } from "react";
 
 export default function Task(props: {
-  key: string;
   id: string;
   task: string;
   subtasks: [
@@ -19,7 +18,7 @@ export default function Task(props: {
 
   return (
     <>
-      <button
+      <div
         onClick={() => setTaskDetailIsActive(true)}
         className="bg-dark-grey rounded-lg px-4 py-6 flex flex-col hover:cursor-pointer hover:bg-lines-dark mb-4"
       >
@@ -32,7 +31,7 @@ export default function Task(props: {
           }
           of {props.subtasks.length}) &nbsp; subtasks
         </p>
-      </button>
+      </div>
 
       {taskDetailIsActive && (
         <TaskDetail

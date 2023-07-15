@@ -5,7 +5,6 @@ import { useState } from "react";
 import IconChevronDown from "../assets/icon-chevron-down.svg";
 import IconChevronUp from "../assets/icon-chevron-up.svg";
 import IconVerticalEllipsis from "../assets/icon-vertical-ellipsis.svg";
-import IconCheck from "../assets/icon-check.svg";
 
 import StatusList from "./StatusList";
 import EditDeleteTask from "./EditDeleteTask";
@@ -14,9 +13,9 @@ import EditTaskForm from "./EditTaskForm";
 import Subtask from "./Subtask";
 
 export default function TaskDetail(props: {
-  key: string;
   id: string;
   task: string;
+  description: string;
   subtasks: [
     {
       id: string;
@@ -24,7 +23,6 @@ export default function TaskDetail(props: {
       subtask: string;
     }
   ];
-  description: string;
 }) {
   const [completedTaskCount, setCompletedTaskCount] = useState(
     props.subtasks.filter((subtask) => subtask.is_completed == true).length
@@ -112,7 +110,6 @@ export default function TaskDetail(props: {
             {statusListIsActive && <StatusList />}
           </button>
         </form>
-        {/* <EditTaskForm /> */}
       </div>
 
       {deleteTaskConfirmIsActive && (
@@ -120,7 +117,15 @@ export default function TaskDetail(props: {
           setDeleteTaskConfirmIsActive={setDeleteTaskConfirmIsActive}
         />
       )}
-      {editTaskFormIsActive && <EditTaskForm />}
+      {editTaskFormIsActive && (
+        <EditTaskForm
+          key={props.id}
+          id={props.id}
+          task={props.task}
+          description={props.description}
+          subtasks={props.subtasks}
+        />
+      )}
     </>
   );
 }
