@@ -18,9 +18,6 @@ import EmptyBoardMessage from "@/components/EmptyBoardMessage";
 import SidebarMobile from "@/components/SidebarMobile";
 import EditDeleteBoard from "@/components/EditDeleteBoard";
 import NewTaskForm from "@/components/NewTaskForm";
-import EditTaskForm from "@/components/EditTaskForm";
-import TaskDetail from "@/components/TaskDetail";
-import DeleteTaskConfirm from "@/components/DeleteTaskConfirm";
 import DeleteBoardConfirm from "@/components/DeleteBoardConfirm";
 import NewBoardForm from "@/components/NewBoardForm";
 import EditBoardForm from "@/components/EditBoardForm";
@@ -202,13 +199,15 @@ export default function Board() {
           {/* VIEWPORT */}
           <section className="w-full h-full flex p-4 pt-6 gap-6 overflow-auto scrollbar-hide mb-6">
             {/* COLUMN */}
-            {mappedColumn}
+            {columns.length > 0 ? mappedColumn : <EmptyBoardMessage />}
 
-            <button className="flex justify-center items-center text-heading-xl text-medium-grey w-[280px] min-w-[280px] h-[815px] bg-gradient-to-b from-dark-grey/25 to-dark-grey/10 rounded-md mt-6">
-              + New Column
-            </button>
+            {columns.length > 0 && (
+              <button className="flex justify-center items-center text-heading-xl text-medium-grey w-[280px] min-w-[280px] h-[815px] bg-gradient-to-b from-dark-grey/25 to-dark-grey/10 rounded-md mt-6">
+                + New Column
+              </button>
+            )}
+
             {/* EMPTY BOARD MESSAGE */}
-            {/* <EmptyBoardMessage /> */}
           </section>
         </div>
 

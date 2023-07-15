@@ -5,7 +5,13 @@ export default function Task(props: {
   key: string;
   id: string;
   task: string;
-  subtasks: [object];
+  subtasks: [
+    {
+      id: string;
+      is_completed: boolean;
+      subtask: string;
+    }
+  ];
   description: string;
   setTaskDetailIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
@@ -14,7 +20,6 @@ export default function Task(props: {
   return (
     <>
       <button
-        key={props.task.id}
         onClick={() => setTaskDetailIsActive(true)}
         className="bg-dark-grey rounded-lg px-4 py-6 flex flex-col hover:cursor-pointer hover:bg-lines-dark mb-4"
       >
