@@ -8,6 +8,8 @@ import React from "react";
 import { supabase } from "@/utils/client";
 import { AuthError } from "@supabase/supabase-js";
 import EmailVerification from "@/components/EmailVerification";
+import LogoLight from "../../assets/logo-light.svg";
+import Image from "next/image";
 
 interface LoginForm {
   email: string;
@@ -64,9 +66,10 @@ function Login() {
   };
 
   return (
-    <div className="bg-very-dark-grey min-h-screen flex items-center justify-center p-4">
+    <div className="bg-very-dark-grey min-h-screen flex flex-col items-center justify-center p-4">
       <div className="bg-dark-grey p-6 rounded-md w-full max-w-[480px] flex flex-col items-center">
-        <h1 className="text-heading-lg mb-6 self-start">Login</h1>
+        <Image src={LogoLight} alt="logo-light" className="mb-6" />
+        {/* <h1 className="text-heading-lg mb-6 self-start">Login</h1> */}
         <form
           className="flex flex-col w-full"
           onSubmit={handleSubmit(handleLogin)}
@@ -76,7 +79,7 @@ function Login() {
             <input
               type="email"
               mt-1
-              placeholder="Enter your email..."
+              placeholder="Enter your email"
               {...register("email")}
               className={`outline-none text-white-custom border ${
                 errors.email
@@ -94,7 +97,7 @@ function Login() {
             <label className="block mb-2 text-body-md">Password</label>
             <input
               type="password"
-              placeholder="Enter your password..."
+              placeholder="Enter your password"
               {...register("password")}
               className={`outline-none text-white-custom border ${
                 errors.password
