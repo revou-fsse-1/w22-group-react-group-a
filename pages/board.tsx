@@ -85,7 +85,7 @@ export default function Board() {
 
   return (
     <>
-      <div className="bg-very-dark-grey h-screen w-screen flex">
+      <div className="bg-very-dark-grey h-screen w-screen flex scrollbar-hide">
         {/* SIDEBAR */}
         {sidebarIsActive && (
           <Sidebar
@@ -193,7 +193,7 @@ export default function Board() {
           )}
 
           {/* VIEWPORT */}
-          <section className="w-full h-full flex p-4 pt-6 gap-6 overflow-auto mb-6">
+          <section className="w-full h-full flex p-4 pt-6 gap-6 scrollbar-hide">
             {/* COLUMN */}
             {mappedColumn}
 
