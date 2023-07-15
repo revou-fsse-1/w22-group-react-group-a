@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Dialog } from "@headlessui/react";
 
 import IconCross from "../assets/icon-cross.svg";
@@ -9,16 +9,32 @@ import IconChevronUp from "../assets/icon-chevron-up.svg";
 import StatusList from "./StatusList";
 
 export default function NewTaskForm(props: {
-  isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  newTaskFormIsActive: boolean;
+  setNewTaskFormIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   // STATUS LIST
   const [statusListIsActive, setStatusListIsActive] = useState(false);
+  const [titleInput, setTitleInput] = useState("");
+  const [descriptionInput, setDescriptionInput] = useState("");
+
+  const handleTitleInputChange = useCallback(
+    (event: React.ChangeEvent<any>) => {
+      setTitleInput(event.target.value);
+    },
+    []
+  );
+  const handleDescriptionInputChange = useCallback(
+    (event: React.ChangeEvent<any>) => {
+      setDescriptionInput(event.target.value);
+    },
+    []
+  );
+
   const toggleStatusList = () => {
     setStatusListIsActive((current) => !current);
   };
   return (
-    <div className="bg-black-overlay flex justify-center items-center w-screen h-screen min-h-fit p-4 fixed z-50">
+    <div className="bg-black-overlay flex justify-center items-center w-screen h-screen min-h-fit p-4 fixed z-50 overflow-scroll">
       <form
         action="submit"
         className="flex flex-col w-full max-w-[480px] h-fit p-8 rounded-md bg-dark-grey"
@@ -32,6 +48,7 @@ export default function NewTaskForm(props: {
           type="text"
           name="title"
           id="title"
+          onChange={handleTitleInputChange}
           className="h-[40px] bg-dark-grey border border-lines-dark mb-6 px-4 rounded-md text-white-custom text-body-lg placeholder:text-white-custom/25 placeholder:text-body-lg outline-none"
           placeholder="e.g. Take coffee break"
         />
@@ -45,6 +62,7 @@ export default function NewTaskForm(props: {
           id="description"
           cols={30}
           rows={5}
+          onChange={handleDescriptionInputChange}
           className="min-h-[115px] bg-dark-grey border border-lines-dark p-4 mb-6 rounded-md text-white-custom text-body-lg placeholder:text-white-custom/25 placeholder:text-body-lg outline-none resize-none"
           placeholder="e.g. It’s always good to take a break. This 
           15 minute break will  recharge the batteries 
@@ -66,7 +84,11 @@ export default function NewTaskForm(props: {
               placeholder="e.g. Take coffee break"
             />
             <button type="button" className="h-[40px]">
-              <Image src={IconCross} alt="icon-cross" />
+              <Image
+                className="hover:fill-red-custom"
+                src={IconCross}
+                alt="icon-cross"
+              />
             </button>
           </div>
           <div className="flex gap-4">
@@ -78,7 +100,11 @@ export default function NewTaskForm(props: {
               placeholder="e.g. Take coffee break"
             />
             <button type="button" className="h-[40px]">
-              <Image src={IconCross} alt="icon-cross" />
+              <Image
+                className="hover:fill-red-custom"
+                src={IconCross}
+                alt="icon-cross"
+              />
             </button>
           </div>
         </div>

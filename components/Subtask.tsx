@@ -3,7 +3,6 @@ import IconCheck from "../assets/icon-check.svg";
 import { useEffect, useState } from "react";
 
 export default function Subtask(props: {
-  key: string;
   id: string;
   subtask: string;
   is_completed: boolean;
@@ -28,9 +27,7 @@ export default function Subtask(props: {
   return (
     <>
       {isCompleted ? (
-        <button
-          key={props.key}
-          type="button"
+        <div
           onClick={uncheck}
           className="bg-very-dark-grey px-4 py-6 gap-6 rounded-md flex items-center"
         >
@@ -40,17 +37,15 @@ export default function Subtask(props: {
           <p className="text-body-md line-through text-white-custom/50">
             {props.subtask}
           </p>
-        </button>
+        </div>
       ) : (
-        <button
-          key={props.key}
-          type="button"
+        <div
           onClick={check}
           className="bg-very-dark-grey px-4 py-6 gap-6 rounded-md flex items-center"
         >
           <button className="bg-white-custom w-[16px] min-w-[16px] h-[16px] flex justify-center items-center rounded-sm"></button>
           <p className="text-body-md text-white-custom">{props.subtask}</p>
-        </button>
+        </div>
       )}
     </>
   );

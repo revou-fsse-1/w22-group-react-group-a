@@ -1,22 +1,85 @@
 import Image from "next/image";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-import IconCross from "../assets/icon-cross.svg";
 import IconChevronDown from "../assets/icon-chevron-down.svg";
 import IconChevronUp from "../assets/icon-chevron-up.svg";
+import SubtaskInput from "./SubtaskInput";
 
 import StatusList from "./StatusList";
+import { supabase } from "@/utils/client";
 
-export default function EditTaskForm() {
-  // STATUS LIST
+interface Subtask {
+  id: string;
+  is_completed: boolean;
+  subtask: string;
+  task_id: string;
+}
+
+export default function EditTaskForm(props: {
+  id: string;
+  task: string;
+  description: string;
+  subtasks: [
+    {
+      id: string;
+      subtask: string;
+      is_completed: boolean;
+    }
+  ];
+}) {
+  const [titleInput, setTitleInput] = useState(props.task);
+  const [descriptionInput, setDescriptionInput] = useState(props.description);
+  const [subtasks, setSubtasks] = useState<Subtask[]>([]);
   const [statusListIsActive, setStatusListIsActive] = useState(false);
+  const [updateSubtask, setUpdateSubtask] = useState(false);
   const toggleStatusList = () => {
     setStatusListIsActive((current) => !current);
+  };
+
+  const handleTitleInputChange = useCallback(
+    (event: React.ChangeEvent<any>) => {
+      setTitleInput(event.target.value);
+    },
+    []
+  );
+  const handleDescriptionInputChange = useCallback(
+    (event: React.ChangeEvent<any>) => {
+      setDescriptionInput(event.target.value);
+    },
+    []
+  );
+
+  const fetchSubtasks = async () => {
+    const { data, error } = await supabase
+      .from("subtasks")
+      .select(`( * )`)
+      .eq("task_id", props.id);
+    if (error) return error;
+    setSubtasks(data);
+  };
+  useEffect(() => {
+    fetchSubtasks();
+  }, []);
+
+  const mappedSubtasks = subtasks.map((subtask) => (
+    <SubtaskInput
+      key={subtask.id}
+      id={subtask.id}
+      subtask={subtask.subtask}
+      is_completed={subtask.is_completed}
+      updateSubtask={updateSubtask}
+    />
+  ));
+  const handleFormInput = (e: React.ChangeEvent<any>) => {
+    e.preventDefault();
+    setUpdateSubtask((current) => !current);
+    alert("form submitted");
   };
 
   return (
     <div className="bg-black-overlay flex justify-center items-center w-screen h-screen min-h-fit p-4 fixed z-50 top-0 left-0">
       <form
+        onSubmit={handleFormInput}
         action="submit"
         className="flex flex-col w-full max-w-[480px] h-fit p-8 rounded-md bg-dark-grey"
       >
@@ -29,6 +92,8 @@ export default function EditTaskForm() {
           type="text"
           name="title"
           id="title"
+          onChange={handleTitleInputChange}
+          value={titleInput}
           className="h-[40px] bg-dark-grey border border-lines-dark mb-6 px-4 rounded-md text-white-custom text-body-lg placeholder:text-white-custom/25 placeholder:text-body-lg outline-none"
           placeholder="e.g. Take coffee break"
         />
@@ -42,6 +107,8 @@ export default function EditTaskForm() {
           id="description"
           cols={30}
           rows={5}
+          onChange={handleDescriptionInputChange}
+          value={descriptionInput}
           className="min-h-[115px] bg-dark-grey border border-lines-dark p-4 mb-6 rounded-md text-white-custom text-body-lg placeholder:text-white-custom/25 placeholder:text-body-lg outline-none resize-none"
           placeholder="e.g. It’s always good to take a break. This 
           15 minute break will  recharge the batteries 
@@ -53,32 +120,7 @@ export default function EditTaskForm() {
           Subtasks
         </label>
         {/* SUBTASKS CONTAINER */}
-        <div className="flex flex-col gap-3 mb-3">
-          <div className="flex gap-4">
-            <input
-              type="text"
-              name="subtasks"
-              id="subtasks"
-              className="w-full h-[40px] bg-dark-grey border border-lines-dark px-4 rounded-md text-white-custom text-body-lg placeholder:text-white-custom/25 placeholder:text-body-lg outline-none"
-              placeholder="e.g. Take coffee break"
-            />
-            <button type="button" className="h-[40px]">
-              <Image src={IconCross} alt="icon-cross" />
-            </button>
-          </div>
-          <div className="flex gap-4">
-            <input
-              type="text"
-              name="subtasks"
-              id="subtasks"
-              className="w-full h-[40px] bg-dark-grey border border-lines-dark px-4 rounded-md text-white-custom text-body-lg placeholder:text-white-custom/25 placeholder:text-body-lg outline-none"
-              placeholder="e.g. Take coffee break"
-            />
-            <button type="button" className="h-[40px]">
-              <Image src={IconCross} alt="icon-cross" />
-            </button>
-          </div>
-        </div>
+        <div className="flex flex-col gap-3 mb-3">{mappedSubtasks}</div>
         {/* ADD NEW SUBTASK BUTTON */}
         <button className="text-body-md text-main-purple bg-white-custom h-[40px] w-full rounded-full mb-6">
           + Add New Subtask
@@ -104,7 +146,7 @@ export default function EditTaskForm() {
           {statusListIsActive && <StatusList />}
         </button>
         <button className="text-body-md bg-main-purple h-[40px] w-full rounded-full">
-          Create Task
+          Update Task
         </button>
       </form>
     </div>

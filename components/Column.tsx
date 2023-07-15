@@ -16,7 +16,6 @@ interface Task {
 }
 
 export default function Column(props: {
-  key: string;
   data: {
     id: string;
     column: string;

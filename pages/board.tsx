@@ -186,8 +186,8 @@ export default function Board() {
 
           {newTaskFormIsActive && (
             <NewTaskForm
-              isOpen={newTaskFormIsActive}
-              setIsOpen={setNewTaskFormIsActive}
+              newTaskFormIsActive={newTaskFormIsActive}
+              setNewTaskFormIsActive={setNewTaskFormIsActive}
             />
           )}
           {deleteBoardConfirmIsActive && (
@@ -221,7 +221,13 @@ export default function Board() {
           </button>
         )}
         {newBoardFormIsActive && <NewBoardForm />}
-        {editBoardFormIsActive && <EditBoardForm />}
+        {editBoardFormIsActive && (
+          <EditBoardForm
+            activeBoard={activeBoard}
+            activeBoardId={activeBoardId}
+            columns={columns}
+          />
+        )}
       </div>
     </>
   );

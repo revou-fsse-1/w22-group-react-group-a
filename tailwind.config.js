@@ -81,5 +81,8 @@ module.exports = {
       },
     },
   },
+  variants: {
+    fill: ["hover", "focus"],
+  },
   plugins: [require("tailwind-scrollbar-hide")],
 };
