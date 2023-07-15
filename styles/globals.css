@@ -28,6 +28,10 @@ body {
   font-family: "Plus Jakarta Sans";
   background: #20212c;
 }
+html {
+  width: 100vw;
+  height: 100vh;
+}
 
 @layer utilities {
   @variants responsive {
