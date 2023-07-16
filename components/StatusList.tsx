@@ -9,7 +9,7 @@ export default function StatusList(props: {
 }) {
   const mappedColumns = props.columns.map(
     (column: { column: string; id: string; color: string }) => (
-      <span
+      <li
         onClick={() => props.setStatus(column.column)}
         key={column.id}
         className={` ${
@@ -19,13 +19,13 @@ export default function StatusList(props: {
         } text-body-md md:text-body-lg hover:cursor-pointer hover:bg-dark-grey w-full text-left px-4 py-3`}
       >
         {column.column}
-      </span>
+      </li>
     )
   );
 
   return (
-    <div className="absolute left-0 top-12 w-full bg-very-dark-grey shadow-md rounded-lg flex flex-col items-start z-50 overflow-hidden">
+    <ul className="absolute left-0 top-12 w-full bg-very-dark-grey shadow-md rounded-lg flex flex-col items-start z-50 overflow-hidden">
       {mappedColumns}
-    </div>
+    </ul>
   );
 }
