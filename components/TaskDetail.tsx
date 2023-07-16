@@ -92,7 +92,7 @@ export default function TaskDetail(props: {
           </label>
 
           {/* SUBTASKS CONTAINER */}
-          <div className="flex flex-col gap-2 mb-6">{mappedSubtasks}</div>
+          <ul className="flex flex-col gap-2 mb-6">{mappedSubtasks}</ul>
 
           <label htmlFor="status" className="mb-2 text-body-md">
             Current Status
