@@ -11,8 +11,10 @@ import StatusList from "./StatusList";
 export default function NewTaskForm(props: {
   newTaskFormIsActive: boolean;
   setNewTaskFormIsActive: React.Dispatch<React.SetStateAction<boolean>>;
+  columns: string[];
 }) {
   // STATUS LIST
+  const [status, setStatus] = useState(props.columns[0]);
   const [statusListIsActive, setStatusListIsActive] = useState(false);
   const [titleInput, setTitleInput] = useState("");
   const [descriptionInput, setDescriptionInput] = useState("");
@@ -123,14 +125,20 @@ export default function NewTaskForm(props: {
           } hover:border-main-purple  mb-6 px-4 rounded-md text-white-custom text-body-lg placeholder:text-white-custom/25 placeholder:text-body-lg outline-none`}
           onClick={toggleStatusList}
         >
-          Todo
+          {status}
           {!statusListIsActive ? (
             <Image src={IconChevronDown} alt="icon-chevron-down" />
           ) : (
             <Image src={IconChevronUp} alt="icon-chevron-up" />
           )}
           {/* STATUS LIST */}
-          {statusListIsActive && <StatusList />}
+          {statusListIsActive && (
+            <StatusList
+              columns={props.columns}
+              status={status}
+              setStatus={setStatus}
+            />
+          )}
         </button>
         <button className="text-body-md bg-main-purple h-[40px] w-full rounded-full">
           Create Task

@@ -21,6 +21,7 @@ export default function Column(props: {
     column: string;
     color: string;
   };
+  columns: string[];
   setTaskDetailIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -49,6 +50,8 @@ export default function Column(props: {
       subtasks={task.subtasks}
       description={task.description}
       setTaskDetailIsActive={props.setTaskDetailIsActive}
+      status={props.data.column}
+      columns={props.columns}
     />
   ));
 

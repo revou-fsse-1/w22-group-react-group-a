@@ -84,6 +84,7 @@ export default function Board() {
       key={column.id}
       data={column}
       setTaskDetailIsActive={setTaskDetailIsActive}
+      columns={columns}
     />
   ));
 
@@ -188,6 +189,7 @@ export default function Board() {
             <NewTaskForm
               newTaskFormIsActive={newTaskFormIsActive}
               setNewTaskFormIsActive={setNewTaskFormIsActive}
+              columns={columns}
             />
           )}
           {deleteBoardConfirmIsActive && (

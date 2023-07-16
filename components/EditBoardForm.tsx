@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { useCallback, useState } from "react";
 import ColumnInput from "./ColumnInput";
 
@@ -10,6 +9,7 @@ export default function EditBoardForm(props: {
     color: string;
     column: string;
     id: string;
+    map: any;
   };
 }) {
   const [boardNameInput, setBoardNameInput] = useState(props.activeBoard);

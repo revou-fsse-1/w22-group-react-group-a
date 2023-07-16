@@ -12,6 +12,8 @@ export default function Task(props: {
     }
   ];
   description: string;
+  columns: string[];
+  status: string;
   setTaskDetailIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [taskDetailIsActive, setTaskDetailIsActive] = useState(false);
@@ -40,6 +42,8 @@ export default function Task(props: {
           task={props.task}
           subtasks={props.subtasks}
           description={props.description}
+          columns={props.columns}
+          status={props.status}
         />
       )}
     </>
