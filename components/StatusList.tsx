@@ -7,6 +7,7 @@ export default function StatusList(props: {
     map: any;
   };
 }) {
+  // map columns
   const mappedColumns = props.columns.map(
     (column: { column: string; id: string; color: string }) => (
       <li
