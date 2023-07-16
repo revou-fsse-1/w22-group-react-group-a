@@ -23,7 +23,10 @@ export default function TaskDetail(props: {
       subtask: string;
     }
   ];
+  columns: string[];
+  status: string;
 }) {
+  const [status, setStatus] = useState(props.status);
   const [completedTaskCount, setCompletedTaskCount] = useState(
     props.subtasks.filter((subtask) => subtask.is_completed == true).length
   );
@@ -48,6 +51,7 @@ export default function TaskDetail(props: {
       setCompletedTaskCount={setCompletedTaskCount}
     />
   ));
+  console.log(status);
 
   return (
     <>
@@ -100,14 +104,20 @@ export default function TaskDetail(props: {
             } hover:border-main-purple  mb-6 px-4 rounded-md text-white-custom text-body-lg placeholder:text-white-custom/25 placeholder:text-body-lg outline-none`}
             onClick={toggleStatusList}
           >
-            Todo
+            {status}
             {!statusListIsActive ? (
               <Image src={IconChevronDown} alt="icon-chevron-down" />
             ) : (
               <Image src={IconChevronUp} alt="icon-chevron-up" />
             )}
             {/* STATUS LIST */}
-            {statusListIsActive && <StatusList />}
+            {statusListIsActive && (
+              <StatusList
+                columns={props.columns}
+                status={status}
+                setStatus={setStatus}
+              />
+            )}
           </button>
         </form>
       </div>
@@ -124,6 +134,8 @@ export default function TaskDetail(props: {
           task={props.task}
           description={props.description}
           subtasks={props.subtasks}
+          columns={props.columns}
+          status={props.status}
         />
       )}
     </>

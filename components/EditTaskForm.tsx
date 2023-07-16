@@ -26,7 +26,10 @@ export default function EditTaskForm(props: {
       is_completed: boolean;
     }
   ];
+  columns: string[];
+  status: string;
 }) {
+  const [status, setStatus] = useState(props.status);
   const [titleInput, setTitleInput] = useState(props.task);
   const [descriptionInput, setDescriptionInput] = useState(props.description);
   const [subtasks, setSubtasks] = useState<Subtask[]>([]);
@@ -108,7 +111,7 @@ export default function EditTaskForm(props: {
           cols={30}
           rows={5}
           onChange={handleDescriptionInputChange}
-          value={descriptionInput}
+          value={descriptionInput || ""}
           className="min-h-[115px] bg-dark-grey border border-lines-dark p-4 mb-6 rounded-md text-white-custom text-body-lg placeholder:text-white-custom/25 placeholder:text-body-lg outline-none resize-none"
           placeholder="e.g. It’s always good to take a break. This 
           15 minute break will  recharge the batteries 
@@ -129,22 +132,27 @@ export default function EditTaskForm(props: {
         <label htmlFor="status" className="mb-2 text-body-md">
           Status
         </label>
-        <button
-          type="button"
+        <div
           className={`flex relative justify-between items-center h-[40px] bg-dark-grey border ${
             statusListIsActive ? "border-main-purple" : "border-lines-dark"
           } hover:border-main-purple mb-6 px-4 rounded-md text-white-custom text-body-lg placeholder:text-white-custom/25 placeholder:text-body-lg outline-none`}
           onClick={toggleStatusList}
         >
-          Todo
+          {status}
           {!statusListIsActive ? (
             <Image src={IconChevronDown} alt="icon-chevron-down" />
           ) : (
             <Image src={IconChevronUp} alt="icon-chevron-up" />
           )}
           {/* STATUS LIST */}
-          {statusListIsActive && <StatusList />}
-        </button>
+          {statusListIsActive && (
+            <StatusList
+              columns={props.columns}
+              status={status}
+              setStatus={setStatus}
+            />
+          )}
+        </div>
         <button className="text-body-md bg-main-purple h-[40px] w-full rounded-full">
           Update Task
         </button>

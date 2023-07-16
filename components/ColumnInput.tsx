@@ -7,7 +7,7 @@ export default function ColumnInput(props: {
   id: string;
   updateColumn: boolean;
 }) {
-  const [columnInput, setColumnInput] = useState(props.column.toUpperCase());
+  const [columnInput, setColumnInput] = useState(props.column);
   const handleColumnInputChange = useCallback(
     (event: React.ChangeEvent<any>) => {
       setColumnInput(event.target.value);
