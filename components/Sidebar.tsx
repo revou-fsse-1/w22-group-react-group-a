@@ -4,6 +4,7 @@ import IconBoard from "../assets/icon-board.svg";
 import IconBoardWhite from "../assets/icon-board-white.svg";
 import IconBoardPurple from "../assets/icon-board-purple.svg";
 import IconHideSidebar from "../assets/icon-hide-sidebar.svg";
+import EditBoardForm from "./EditBoardForm";
 
 interface Board {
   id: string;
@@ -15,7 +16,7 @@ export default function Sidebar(props: {
   setSidebarIsActive: React.Dispatch<React.SetStateAction<boolean>>;
   setActiveBoard: React.Dispatch<React.SetStateAction<string>>;
   setActiveBoardId: React.Dispatch<React.SetStateAction<string>>;
-  setNewBoardFormIsActive: React.Dispatch<React.SetStateAction<boolean>>;
+  setEditBoardFormIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const mappedBoardList = props.boardList.map((board) =>
     props.activeBoard === board.board ? (
@@ -57,7 +58,7 @@ export default function Sidebar(props: {
 
       {/* CREATE NEW BOARD */}
       <button
-        onClick={() => props.setNewBoardFormIsActive(true)}
+        onClick={() => props.setEditBoardFormIsActive(true)}
         className="text-heading-md flex items-center gap-4 w-[100%] px-6 py-4 rounded-r-full text-main-purple"
       >
         <Image priority src={IconBoardPurple} alt="icon-board" />+ Create New

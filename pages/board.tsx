@@ -90,7 +90,12 @@ export default function Board() {
 
   return (
     <>
-      <div className="bg-very-dark-grey h-screen w-screen flex scrollbar-hide">
+      <div
+        onClick={() => {
+          setEditDeleteBoardIsActive(false);
+        }}
+        className="bg-very-dark-grey h-screen w-screen flex scrollbar-hide"
+      >
         {/* SIDEBAR */}
         {sidebarIsActive && (
           <Sidebar
@@ -99,7 +104,7 @@ export default function Board() {
             setSidebarIsActive={setSidebarIsActive}
             setActiveBoard={setActiveBoard}
             setActiveBoardId={setActiveBoardId}
-            setNewBoardFormIsActive={setNewBoardFormIsActive}
+            setEditBoardFormIsActive={setEditBoardFormIsActive}
           />
         )}
 
@@ -155,7 +160,10 @@ export default function Board() {
               {/* EDIT DELETE TOGGLE BUTTON */}
 
               <button
-                onClick={toggleEditDeleteBoard}
+                onClick={(event) => {
+                  toggleEditDeleteBoard();
+                  event.stopPropagation();
+                }}
                 className="hover:cursor-pointer relative h-full"
               >
                 <Image
@@ -181,7 +189,7 @@ export default function Board() {
               setSidebarIsActive={setSidebarIsActive}
               setActiveBoard={setActiveBoard}
               setActiveBoardId={setActiveBoardId}
-              setNewBoardFormIsActive={setNewBoardFormIsActive}
+              setEditBoardFormIsActive={setEditBoardFormIsActive}
             />
           )}
 
@@ -194,6 +202,7 @@ export default function Board() {
           )}
           {deleteBoardConfirmIsActive && (
             <DeleteBoardConfirm
+              activeBoard={activeBoard}
               setDeleteBoardConfirmIsActive={setDeleteBoardConfirmIsActive}
             />
           )}
@@ -204,7 +213,10 @@ export default function Board() {
             {columns.length > 0 ? mappedColumn : <EmptyBoardMessage />}
 
             {columns.length > 0 && (
-              <button className="flex justify-center items-center text-heading-xl text-medium-grey w-[280px] min-w-[280px] h-[815px] bg-gradient-to-b from-dark-grey/25 to-dark-grey/10 rounded-md mt-6">
+              <button
+                onClick={() => setEditBoardFormIsActive(true)}
+                className="flex justify-center items-center text-heading-xl text-medium-grey w-[280px] min-w-[280px] h-[815px] bg-gradient-to-b from-dark-grey/25 to-dark-grey/10 rounded-md mt-6"
+              >
                 + New Column
               </button>
             )}
@@ -228,6 +240,7 @@ export default function Board() {
             activeBoard={activeBoard}
             activeBoardId={activeBoardId}
             columns={columns}
+            setEditBoardFormIsActive={setEditBoardFormIsActive}
           />
         )}
       </div>

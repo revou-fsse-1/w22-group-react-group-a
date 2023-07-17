@@ -37,8 +37,12 @@ export default function NewTaskForm(props: {
   };
 
   return (
-    <div className="bg-black-overlay flex justify-center items-center w-screen h-screen min-h-fit p-4 fixed z-50 top-0 left-0 overflow-scroll">
+    <div
+      onClick={() => props.setNewTaskFormIsActive(false)}
+      className="bg-black-overlay flex justify-center items-center w-screen h-screen min-h-fit p-4 fixed z-50 top-0 left-0 overflow-scroll"
+    >
       <form
+        onClick={(event) => event.stopPropagation()}
         action="submit"
         className="flex flex-col w-full max-w-[480px] h-fit p-8 rounded-md bg-dark-grey"
       >

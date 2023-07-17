@@ -44,6 +44,7 @@ export default function Task(props: {
           description={props.description}
           columns={props.columns}
           status={props.status}
+          setTaskDetailIsActive={setTaskDetailIsActive}
         />
       )}
     </>

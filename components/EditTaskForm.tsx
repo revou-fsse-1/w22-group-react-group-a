@@ -28,6 +28,7 @@ export default function EditTaskForm(props: {
   ];
   columns: string[];
   status: string;
+  setEditTaskFormIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [status, setStatus] = useState(props.status);
   const [titleInput, setTitleInput] = useState(props.task);
@@ -80,8 +81,12 @@ export default function EditTaskForm(props: {
   };
 
   return (
-    <div className="bg-black-overlay flex justify-center items-center w-screen h-screen min-h-fit p-4 fixed z-50 top-0 left-0">
+    <div
+      onClick={() => props.setEditTaskFormIsActive(false)}
+      className="bg-black-overlay flex justify-center items-center w-screen h-screen min-h-fit p-4 fixed z-50 top-0 left-0"
+    >
       <form
+        onClick={(event) => event.stopPropagation()}
         onSubmit={handleFormInput}
         action="submit"
         className="flex flex-col w-full max-w-[480px] h-fit p-8 rounded-md bg-dark-grey"

@@ -25,6 +25,7 @@ export default function TaskDetail(props: {
   ];
   columns: string[];
   status: string;
+  setTaskDetailIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [status, setStatus] = useState(props.status);
   const [completedTaskCount, setCompletedTaskCount] = useState(
@@ -55,15 +56,29 @@ export default function TaskDetail(props: {
 
   return (
     <>
-      <div className="bg-black-overlay flex justify-center items-center w-screen h-screen p-4 fixed top-0 left-0 z-50">
+      <div
+        onClick={() => {
+          {
+            props.setTaskDetailIsActive(false);
+          }
+        }}
+        className="bg-black-overlay flex justify-center items-center w-screen h-screen p-4 fixed top-0 left-0 z-50"
+      >
         <form
+          onClick={(event) => {
+            event.stopPropagation();
+            setEditDeleteTaskIsActive(false);
+          }}
           action="submit"
           className="flex flex-col w-full max-w-[480px] h-fit p-6 rounded-md bg-dark-grey"
         >
           <div className="mb-6 gap-8 flex justify-between items-center">
             <h3 className="text-heading-lg">{props.task}</h3>
             <button
-              onClick={toggleEditDeleteTask}
+              onClick={(event) => {
+                event?.stopPropagation();
+                setEditDeleteTaskIsActive(true);
+              }}
               className="relative"
               type="button"
             >
@@ -77,6 +92,7 @@ export default function TaskDetail(props: {
                 <EditDeleteTask
                   setEditTaskFormIsActive={setEditTaskFormIsActive}
                   setDeleteTaskConfirmIsActive={setDeleteTaskConfirmIsActive}
+                  setEditDeleteTaskIsActive={setEditDeleteTaskIsActive}
                 />
               )}
             </button>
@@ -124,6 +140,7 @@ export default function TaskDetail(props: {
 
       {deleteTaskConfirmIsActive && (
         <DeleteTaskConfirm
+          task={props.task}
           setDeleteTaskConfirmIsActive={setDeleteTaskConfirmIsActive}
         />
       )}
@@ -136,6 +153,7 @@ export default function TaskDetail(props: {
           subtasks={props.subtasks}
           columns={props.columns}
           status={props.status}
+          setEditTaskFormIsActive={setEditTaskFormIsActive}
         />
       )}
     </>

@@ -11,6 +11,7 @@ export default function EditBoardForm(props: {
     id: string;
     map: any;
   };
+  setEditBoardFormIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [boardNameInput, setBoardNameInput] = useState(props.activeBoard);
   const handleBoardNameInputChange = useCallback(
@@ -37,11 +38,15 @@ export default function EditBoardForm(props: {
   ));
 
   return (
-    <div className="bg-black-overlay flex justify-center items-center w-screen h-screen min-h-fit p-4 fixed z-50">
+    <div
+      onClick={() => props.setEditBoardFormIsActive(false)}
+      className="bg-black-overlay flex justify-center items-center w-screen h-screen min-h-fit p-4 fixed z-50"
+    >
       <form
         action="submit"
         onSubmit={handleFormInput}
         className="flex flex-col w-full max-w-[480px] h-fit p-8 rounded-md bg-dark-grey"
+        onClick={(event) => event.stopPropagation()}
       >
         <h3 className="text-heading-lg mb-6">Edit Board</h3>
         {/* BOARD NAME */}
@@ -65,11 +70,18 @@ export default function EditBoardForm(props: {
         {/* COLUMNS CONTAINER */}
         <div className="flex flex-col gap-3 mb-3">{mappedColumnInput}</div>
         {/* ADD NEW SUBTASK BUTTON */}
-        <button className="text-body-md text-main-purple bg-white-custom h-[40px] w-full rounded-full mb-6">
+        <button
+          type="button"
+          className="text-body-md text-main-purple bg-white-custom h-[40px] w-full rounded-full mb-6"
+        >
           + Add New Column
         </button>
 
-        <button className="text-body-md bg-main-purple h-[40px] w-full rounded-full">
+        <button
+          type="button"
+          className="text-body-md bg-main-purple h-[40px] w-full rounded-full"
+          onClick={handleFormInput}
+        >
           Update Board
         </button>
       </form>

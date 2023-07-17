@@ -14,7 +14,7 @@ export default function BoardsSelection(props: {
   setSidebarIsActive: React.Dispatch<React.SetStateAction<boolean>>;
   setActiveBoard: React.Dispatch<React.SetStateAction<string>>;
   setActiveBoardId: React.Dispatch<React.SetStateAction<string>>;
-  setNewBoardFormIsActive: React.Dispatch<React.SetStateAction<boolean>>;
+  setEditBoardFormIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const mappedBoardList = props.boardList.map((board) =>
     props.activeBoard === board.board ? (
@@ -55,7 +55,7 @@ export default function BoardsSelection(props: {
         {/* CREATE NEW BOARD */}
         <button
           onClick={() => {
-            props.setNewBoardFormIsActive(true);
+            props.setEditBoardFormIsActive(true);
             props.setSidebarIsActive(false);
           }}
           className="text-heading-md flex items-center gap-4 w-[100%] px-6 py-4 rounded-r-full text-main-purple"
