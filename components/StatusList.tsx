@@ -1,5 +1,7 @@
+import { supabase } from "@/utils/client";
 export default function StatusList(props: {
   setStatus: React.Dispatch<React.SetStateAction<string>>;
+  id: string;
   status: string;
   columns: {
     column: string;
@@ -8,10 +10,22 @@ export default function StatusList(props: {
   };
 }) {
   // map columns
+  const updateStatus = async (column: string, columnId: string) => {
+    props.setStatus(column);
+
+    const { data, error } = await supabase
+      .from("tasks")
+      .update({ column_id: columnId })
+      .eq("id", `${props.id}`);
+    // .select();
+  };
   const mappedColumns = props.columns.map(
     (column: { column: string; id: string; color: string }) => (
       <li
-        onClick={() => props.setStatus(column.column)}
+        onClick={(event) => {
+          event.preventDefault();
+          updateStatus(column.column, column.id);
+        }}
         key={column.id}
         className={` ${
           props.status == column.column

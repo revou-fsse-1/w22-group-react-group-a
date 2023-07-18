@@ -22,7 +22,6 @@ export default function Column(props: {
     color: string;
   };
   columns: string[];
-  setTaskDetailIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [tasks, setTasks] = useState<Task[]>([]);
 
@@ -36,11 +35,7 @@ export default function Column(props: {
   }
   useEffect(() => {
     fetchTasks();
-  }, []);
-
-  const toggleTaskDetail = () => {
-    props.setTaskDetailIsActive((current) => !current);
-  };
+  }, [tasks]);
 
   const mappedTasks = tasks.map((task) => (
     <Task

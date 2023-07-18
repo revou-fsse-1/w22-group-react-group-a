@@ -35,7 +35,6 @@ export default function Board() {
   const [newTaskFormIsActive, setNewTaskFormIsActive] = useState(false);
   const [editBoardFormIsActive, setEditBoardFormIsActive] = useState(false);
   const [newBoardFormIsActive, setNewBoardFormIsActive] = useState(false);
-  const [taskDetailIsActive, setTaskDetailIsActive] = useState(false);
   const [editTaskFormIsActive, setEditTaskFormIsActive] = useState(false);
   const [deleteBoardConfirmIsActive, setDeleteBoardConfirmIsActive] =
     useState(false);
@@ -80,12 +79,7 @@ export default function Board() {
   }, [activeBoardId]);
 
   const mappedColumn = columns.map((column) => (
-    <Column
-      key={column.id}
-      data={column}
-      setTaskDetailIsActive={setTaskDetailIsActive}
-      columns={columns}
-    />
+    <Column key={column.id} data={column} columns={columns} />
   ));
 
   return (
