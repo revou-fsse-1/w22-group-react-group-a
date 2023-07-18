@@ -63,7 +63,14 @@ export default function EditTaskForm(props: {
   };
   useEffect(() => {
     fetchSubtasks();
-  }, []);
+  }, [subtasks]);
+
+  const addNewSubtask = async () => {
+    const { data, error } = await supabase
+      .from("subtasks")
+      .insert([{ subtask: "New Subtask", task_id: props.id }])
+      .select();
+  };
 
   const mappedSubtasks = subtasks.map((subtask) => (
     <SubtaskInput
@@ -74,10 +81,11 @@ export default function EditTaskForm(props: {
       updateSubtask={updateSubtask}
     />
   ));
-  const handleFormInput = (e: React.ChangeEvent<any>) => {
+  const handleFormSubmit = (e: React.ChangeEvent<any>) => {
     e.preventDefault();
     setUpdateSubtask((current) => !current);
     alert("form submitted");
+    props.setEditTaskFormIsActive(false);
   };
 
   return (
@@ -87,7 +95,7 @@ export default function EditTaskForm(props: {
     >
       <form
         onClick={(event) => event.stopPropagation()}
-        onSubmit={handleFormInput}
+        onSubmit={handleFormSubmit}
         action="submit"
         className="flex flex-col w-full max-w-[480px] h-fit p-8 rounded-md bg-dark-grey"
       >
@@ -130,7 +138,11 @@ export default function EditTaskForm(props: {
         {/* SUBTASKS CONTAINER */}
         <div className="flex flex-col gap-3 mb-3">{mappedSubtasks}</div>
         {/* ADD NEW SUBTASK BUTTON */}
-        <button className="text-body-md text-main-purple bg-white-custom h-[40px] w-full rounded-full mb-6">
+        <button
+          type="button"
+          className="text-body-md text-main-purple bg-white-custom h-[40px] w-full rounded-full mb-6"
+          onClick={addNewSubtask}
+        >
           + Add New Subtask
         </button>
 

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import IconCheck from "../assets/icon-check.svg";
 import { useEffect, useState } from "react";
+import { supabase } from "@/utils/client";
 
 export default function Subtask(props: {
   id: string;
@@ -13,15 +14,27 @@ export default function Subtask(props: {
     setIsCompleted(props.is_completed);
   }, []);
 
-  const check = (e: React.ChangeEvent<any>) => {
+  const check = async (e: React.ChangeEvent<any>) => {
     e.preventDefault();
     props.setCompletedTaskCount((current) => current + 1);
     setIsCompleted(true);
+
+    const { data, error } = await supabase
+      .from("subtasks")
+      .update({ is_completed: true })
+      .eq("id", props.id)
+      .select();
   };
-  const uncheck = (e: React.ChangeEvent<any>) => {
+  const uncheck = async (e: React.ChangeEvent<any>) => {
     e.preventDefault();
     props.setCompletedTaskCount((current) => current - 1);
     setIsCompleted(false);
+
+    const { data, error } = await supabase
+      .from("subtasks")
+      .update({ is_completed: false })
+      .eq("id", props.id)
+      .select();
   };
 
   return (
