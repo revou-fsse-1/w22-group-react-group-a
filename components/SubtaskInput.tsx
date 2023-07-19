@@ -1,6 +1,7 @@
 import Image from "next/image";
 import IconCross from "../assets/icon-cross.svg";
 import { useCallback, useEffect, useState } from "react";
+import { supabase } from "@/utils/client";
 
 export default function SubtaskInput(props: {
   id: string;
@@ -15,6 +16,12 @@ export default function SubtaskInput(props: {
     },
     []
   );
+  const deleteSubtask = async () => {
+    const { error } = await supabase
+      .from("subtasks")
+      .delete()
+      .eq("id", props.id);
+  };
   const updateSubtask = () => {
     alert(`${props.subtask} is updated`);
   };
@@ -32,7 +39,7 @@ export default function SubtaskInput(props: {
         className="w-full h-[40px] bg-dark-grey border border-lines-dark px-4 rounded-md text-white-custom text-body-lg placeholder:text-white-custom/25 placeholder:text-body-lg outline-none"
         placeholder="e.g. Take coffee break"
       />
-      <button type="button" className="h-[40px]">
+      <button onClick={deleteSubtask} type="button" className="h-[40px]">
         <Image src={IconCross} alt="icon-cross" />
       </button>
     </div>

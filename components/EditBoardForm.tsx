@@ -22,7 +22,7 @@ export default function EditBoardForm(props: {
   );
   const [updateColumn, setUpdateColumn] = useState(false);
 
-  const handleFormInput = (e: React.ChangeEvent<any>) => {
+  const handleFormSubmit = (e: React.ChangeEvent<any>) => {
     e.preventDefault();
     setUpdateColumn((current) => !current);
     alert("form submitted");
@@ -44,7 +44,7 @@ export default function EditBoardForm(props: {
     >
       <form
         action="submit"
-        onSubmit={handleFormInput}
+        onSubmit={handleFormSubmit}
         className="flex flex-col w-full max-w-[480px] h-fit p-8 rounded-md bg-dark-grey"
         onClick={(event) => event.stopPropagation()}
       >
@@ -80,7 +80,7 @@ export default function EditBoardForm(props: {
         <button
           type="button"
           className="text-body-md bg-main-purple h-[40px] w-full rounded-full"
-          onClick={handleFormInput}
+          onClick={handleFormSubmit}
         >
           Update Board
         </button>

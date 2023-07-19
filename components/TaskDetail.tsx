@@ -37,10 +37,9 @@ export default function TaskDetail(props: {
   const [deleteTaskConfirmIsActive, setDeleteTaskConfirmIsActive] =
     useState(false);
   const toggleStatusList = () => {
+    console.log(props.id);
+
     setStatusListIsActive((current) => !current);
-  };
-  const toggleEditDeleteTask = () => {
-    setEditDeleteTaskIsActive((current) => !current);
   };
 
   const mappedSubtasks = props.subtasks.map((subtask) => (
@@ -52,7 +51,6 @@ export default function TaskDetail(props: {
       setCompletedTaskCount={setCompletedTaskCount}
     />
   ));
-  console.log(status);
 
   return (
     <>
@@ -132,6 +130,7 @@ export default function TaskDetail(props: {
                 columns={props.columns}
                 status={status}
                 setStatus={setStatus}
+                id={props.id}
               />
             )}
           </button>
