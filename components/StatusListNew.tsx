@@ -14,6 +14,7 @@ export default function StatusList(props: {
   // map columns
   const updateStatus = async (column: string, columnId: string) => {
     props.setStatus(column);
+    props.setStatusId(columnId);
 
     const { data, error } = await supabase
       .from("tasks")

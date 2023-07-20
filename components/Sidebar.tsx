@@ -5,6 +5,7 @@ import IconBoardWhite from "../assets/icon-board-white.svg";
 import IconBoardPurple from "../assets/icon-board-purple.svg";
 import IconHideSidebar from "../assets/icon-hide-sidebar.svg";
 import EditBoardForm from "./EditBoardForm";
+import { supabase } from "@/utils/client";
 
 interface Board {
   id: string;
@@ -12,14 +13,23 @@ interface Board {
 }
 export default function Sidebar(props: {
   activeBoard: string;
+  activeBoardId: string;
   boardList: Board[];
+  setBoardList: React.Dispatch<React.SetStateAction<any>>;
   setSidebarIsActive: React.Dispatch<React.SetStateAction<boolean>>;
   setActiveBoard: React.Dispatch<React.SetStateAction<string>>;
   setActiveBoardId: React.Dispatch<React.SetStateAction<string>>;
-  setEditBoardFormIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const addNewBoard = async () => {
+    const { data, error } = await supabase
+      .from("boards")
+      .insert([{ board: "New Board", user_email: "nikosetiawanp@gmail.com" }])
+      .select();
+    props.setBoardList((current) => [...current, data[0]]);
+  };
+
   const mappedBoardList = props.boardList.map((board) =>
-    props.activeBoard === board.board ? (
+    props.activeBoardId === board.id ? (
       // SELECTED BOARD
       <button
         key={board.id}
@@ -58,7 +68,9 @@ export default function Sidebar(props: {
 
       {/* CREATE NEW BOARD */}
       <button
-        onClick={() => props.setEditBoardFormIsActive(true)}
+        onClick={() => {
+          addNewBoard();
+        }}
         className="text-heading-md flex items-center gap-4 w-[100%] px-6 py-4 rounded-r-full text-main-purple"
       >
         <Image priority src={IconBoardPurple} alt="icon-board" />+ Create New

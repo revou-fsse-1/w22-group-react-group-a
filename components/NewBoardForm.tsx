@@ -1,7 +1,14 @@
 import Image from "next/image";
 import IconCross from "../assets/icon-cross.svg";
+import { supabase } from "@/utils/client";
 
-export default function NewBoardForm() {
+export default function NewBoardForm(props: { activeBoardId: string }) {
+  const addNewColumn = async () => {
+    const { data, error } = await supabase
+      .from("columns")
+      .insert([{ column: "New Column", board_id: props.activeBoardId }])
+      .select();
+  };
   return (
     <div className="bg-black-overlay flex justify-center items-center w-screen h-screen min-h-fit p-4 fixed z-50">
       <form
@@ -53,7 +60,10 @@ export default function NewBoardForm() {
           </div>
         </div>
         {/* ADD NEW SUBTASK BUTTON */}
-        <button className="text-body-md text-main-purple bg-white-custom h-[40px] w-full rounded-full mb-6">
+        <button
+          onClick={addNewColumn}
+          className="text-body-md text-main-purple bg-white-custom h-[40px] w-full rounded-full mb-6"
+        >
           + Add New Column
         </button>
 

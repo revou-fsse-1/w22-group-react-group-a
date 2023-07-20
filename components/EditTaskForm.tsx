@@ -31,6 +31,8 @@ export default function EditTaskForm(props: {
   setEditTaskFormIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [status, setStatus] = useState(props.status);
+  const [statusId, setStatusId] = useState(props.status);
+
   const [titleInput, setTitleInput] = useState(props.task);
   const [descriptionInput, setDescriptionInput] = useState(props.description);
   const [subtasks, setSubtasks] = useState<Subtask[]>([]);

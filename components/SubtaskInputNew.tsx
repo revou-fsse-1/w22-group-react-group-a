@@ -1,16 +1,19 @@
 import Image from "next/image";
 import IconCross from "../assets/icon-cross.svg";
 import { useCallback, useEffect, useState } from "react";
-import { supabase } from "@/utils/client";
 
 export default function SubtaskInput(props: {
-  key: string;
-  id: string;
-  subtask: string;
-  is_completed: boolean;
-  updateSubtask: boolean;
+  subtasks: [
+    {
+      id: number;
+      subtask: string;
+    }
+  ];
+  setSubtasks: React.Dispatch<React.SetStateAction<any>>;
 }) {
-  const [subtaskInput, setSubtaskInput] = useState(props.subtask);
+  const [subtaskInput, setSubtaskInput] = useState(
+    props.subtasks[props.id].subtask
+  );
   const handleSubtaskInputChange = useCallback(
     (event: React.ChangeEvent<any>) => {
       setSubtaskInput(event.target.value);
@@ -19,18 +22,11 @@ export default function SubtaskInput(props: {
   );
 
   const deleteSubtask = async () => {
-    const { error } = await supabase
-      .from("subtasks")
-      .delete()
-      .eq("id", props.id);
+    alert("not yet implemented");
   };
-  const updateSubtask = () => {
-    alert(`${props.subtask} is updated`);
+  const createSubtask = () => {
+    alert(`created ${subtaskInput}`);
   };
-
-  useEffect(() => {
-    props.updateSubtask && updateSubtask();
-  }, [props.updateSubtask]);
 
   return (
     <div key={props.id} className="flex gap-4">
