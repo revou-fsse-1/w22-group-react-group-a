@@ -32,7 +32,6 @@ export default function EditTaskForm(props: {
 }) {
   const [status, setStatus] = useState(props.status);
   const [statusId, setStatusId] = useState(props.status);
-
   const [titleInput, setTitleInput] = useState(props.task);
   const [descriptionInput, setDescriptionInput] = useState(props.description);
   const [subtasks, setSubtasks] = useState<Subtask[]>([]);
@@ -63,9 +62,20 @@ export default function EditTaskForm(props: {
     if (error) return error;
     setSubtasks(data);
   };
+  // const fetchSubtasks = useCallback(() => {
+  //   async () => {
+  //     const { data, error } = await supabase
+  //       .from("subtasks")
+  //       .select(`( * )`)
+  //       .eq("task_id", props.id);
+  //     if (error) return error;
+  //     setSubtasks(data);
+  //   };
+  // }, []);
+
   useEffect(() => {
     fetchSubtasks();
-  }, [subtasks]);
+  }, []);
 
   const addNewSubtask = async () => {
     const { data, error } = await supabase

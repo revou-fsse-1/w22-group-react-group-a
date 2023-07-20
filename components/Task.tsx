@@ -14,9 +14,11 @@ export default function Task(props: {
   description: string;
   columns: string[];
   status: string;
-  setTaskDetailIsActive: React.Dispatch<React.SetStateAction<boolean>>;
+  rerenderTasks: boolean;
+  setRerenderTasks: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [taskDetailIsActive, setTaskDetailIsActive] = useState(false);
+  const [subtasks, setSubtasks] = useState([]);
 
   return (
     <>
@@ -45,6 +47,8 @@ export default function Task(props: {
           columns={props.columns}
           status={props.status}
           setTaskDetailIsActive={setTaskDetailIsActive}
+          rerenderTasks={props.rerenderTasks}
+          setRerenderTasks={props.setRerenderTasks}
         />
       )}
     </>

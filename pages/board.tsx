@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/utils/client";
 
 // ICONS
@@ -63,17 +63,26 @@ export default function Board() {
     fetchBoards();
   }, []);
 
-  async function fetchAllColumns() {
+  const fetchAllColumns = useCallback(async () => {
     const { data, error } = await supabase
       .from("columns")
       .select("*")
       .eq("board_id", activeBoardId);
     if (error) return error;
     setColumns(data);
-  }
+  }, [activeBoardId]);
+
+  // async function fetchAllColumns() {
+  //   const { data, error } = await supabase
+  //     .from("columns")
+  //     .select("*")
+  //     .eq("board_id", activeBoardId);
+  //   if (error) return error;
+  //   setColumns(data);
+  // }
   useEffect(() => {
     fetchAllColumns();
-  }, [activeBoardId, boardList]);
+  }, [activeBoardId, boardList, fetchAllColumns]);
 
   const addNewColumn = async () => {
     const colors = ["red", "orange", "yellow", "green", "blue", "purple"];

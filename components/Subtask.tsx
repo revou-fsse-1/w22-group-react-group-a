@@ -8,17 +8,18 @@ export default function Subtask(props: {
   subtask: string;
   is_completed: boolean;
   setCompletedTaskCount: React.Dispatch<React.SetStateAction<number>>;
+  rerenderTasks: boolean;
+  setRerenderTasks: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [isCompleted, setIsCompleted] = useState(false);
   useEffect(() => {
     setIsCompleted(props.is_completed);
-  }, []);
+  }, [props.is_completed]);
 
   const check = async (e: React.ChangeEvent<any>) => {
     e.preventDefault();
     props.setCompletedTaskCount((current) => current + 1);
     setIsCompleted(true);
-
     const { data, error } = await supabase
       .from("subtasks")
       .update({ is_completed: true })

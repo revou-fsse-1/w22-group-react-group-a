@@ -28,6 +28,8 @@ export default function TaskDetail(props: {
   status: string;
   setTaskDetailIsActive: React.Dispatch<React.SetStateAction<boolean>>;
   activeBoardId: string;
+  rerenderTasks: boolean;
+  setRerenderTasks: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [status, setStatus] = useState(props.status);
   const [completedTaskCount, setCompletedTaskCount] = useState(
@@ -49,6 +51,8 @@ export default function TaskDetail(props: {
       subtask={subtask.subtask}
       is_completed={subtask.is_completed}
       setCompletedTaskCount={setCompletedTaskCount}
+      rerenderTasks={props.rerenderTasks}
+      setRerenderTasks={props.setRerenderTasks}
     />
   ));
 

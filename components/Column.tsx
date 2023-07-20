@@ -1,5 +1,5 @@
 import { supabase } from "@/utils/client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import CircleRed from "../assets/circle-red.svg";
 import CircleOrange from "../assets/circle-orange.svg";
 import CircleYellow from "../assets/circle-yellow.svg";
@@ -26,18 +26,28 @@ export default function Column(props: {
   columns: string[];
 }) {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [rerenderTasks, setRerenderTasks] = useState(false);
 
-  async function fetchTasks() {
+  const fetchTasks = useCallback(async () => {
     const { data, error } = await supabase
       .from("tasks")
       .select("id, task, description, subtasks (*)")
       .eq("column_id", props.data.id);
     if (error) return error;
     setTasks(data);
-  }
+  }, []);
+
+  // async function fetchTasks() {
+  //   const { data, error } = await supabase
+  //     .from("tasks")
+  //     .select("id, task, description, subtasks (*)")
+  //     .eq("column_id", props.data.id);
+  //   if (error) return error;
+  //   setTasks(data);
+  // }
   useEffect(() => {
     fetchTasks();
-  }, [setTasks]);
+  }, []);
 
   const mappedTasks = tasks.map((task) => (
     <Task
@@ -46,9 +56,10 @@ export default function Column(props: {
       task={task.task}
       subtasks={task.subtasks}
       description={task.description}
-      setTaskDetailIsActive={props.setTaskDetailIsActive}
       status={props.data.column}
       columns={props.columns}
+      rerenderTasks={rerenderTasks}
+      setRerenderTasks={setRerenderTasks}
     />
   ));
 

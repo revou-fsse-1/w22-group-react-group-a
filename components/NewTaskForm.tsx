@@ -23,11 +23,6 @@ export default function NewTaskForm(props: {
   const [status, setStatus] = useState(props.columns[0].column);
   const [statusId, setStatusId] = useState(props.columns[0].id);
   const [subtasks, setSubtasks] = useState([]);
-
-  useEffect(() => {
-    console.log(subtasks);
-  }, [subtasks]);
-
   const handleTitleInputChange = useCallback(
     (event: React.ChangeEvent<any>) => {
       setTitleInput(event.target.value);

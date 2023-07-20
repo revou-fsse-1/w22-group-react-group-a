@@ -27,20 +27,23 @@ export default function ColumnInput(props: {
     );
   };
 
-  const updateColumn = async () => {
-    const { data, error } = await supabase
-      .from("columns")
-      .update({ column: columnInput })
-      .eq("id", props.id)
-      .select();
-    if (error) console.log(error);
+  const updateColumn = useCallback(() => {
+    async () => {
+      const { data, error } = await supabase
+        .from("columns")
+        .update({ column: columnInput })
+        .eq("id", props.id)
+        .select();
+      if (error) console.log(error);
 
-    console.log("column updated");
-  };
+      console.log("column updated");
+    };
+  }, [columnInput, props.id]);
+
   useEffect(() => {
     props.updateColumn && updateColumn();
     console.log();
-  }, [props.updateColumn]);
+  }, [props.updateColumn, updateColumn]);
 
   return (
     <div className="flex gap-4">
