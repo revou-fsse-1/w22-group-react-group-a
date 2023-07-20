@@ -1,11 +1,13 @@
 import Image from "next/image";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { supabase } from "@/utils/client";
 
 import IconCross from "../assets/icon-cross.svg";
 import IconChevronDown from "../assets/icon-chevron-down.svg";
 import IconChevronUp from "../assets/icon-chevron-up.svg";
-import StatusList from "./StatusList";
+import StatusListNew from "./StatusListNew";
 import SubtaskInput from "./SubtaskInput";
+import SubtaskInputNew from "./SubtaskInputNew";
 
 export default function NewTaskForm(props: {
   newTaskFormIsActive: boolean;
@@ -13,10 +15,18 @@ export default function NewTaskForm(props: {
   columns: string[];
 }) {
   // STATUS LIST
-  const [status, setStatus] = useState(props.columns[0].column);
+  const taskId = crypto.randomUUID();
+  // const [taskId, setTaskId] = useState();
   const [statusListIsActive, setStatusListIsActive] = useState(false);
   const [titleInput, setTitleInput] = useState("");
   const [descriptionInput, setDescriptionInput] = useState("");
+  const [status, setStatus] = useState(props.columns[0].column);
+  const [statusId, setStatusId] = useState(props.columns[0].id);
+  const [subtasks, setSubtasks] = useState([]);
+
+  useEffect(() => {
+    console.log(subtasks);
+  }, [subtasks]);
 
   const handleTitleInputChange = useCallback(
     (event: React.ChangeEvent<any>) => {
@@ -31,12 +41,47 @@ export default function NewTaskForm(props: {
     []
   );
 
+  const createAllSubtask = async () => {
+    if (subtasks.length > 0) {
+      const { data, error } = await supabase
+        .from("subtasks")
+        .insert(subtasks)
+        .select();
+      if (error) console.log(error);
+      console.log(data);
+    }
+  };
+  const createTask = async () => {
+    const { data, error } = await supabase
+      .from("tasks")
+      .insert([
+        {
+          id: taskId,
+          task: titleInput,
+          description: descriptionInput,
+          column_id: statusId,
+        },
+      ])
+      .select();
+    if (error) console.log(error);
+  };
+
   const toggleStatusList = () => {
     setStatusListIsActive((current) => !current);
   };
-  const handleFormSubmit = () => {
-    alert("form submitted");
+  const handleFormSubmit = async (e: React.ChangeEvent<any>) => {
+    e.preventDefault();
+    createTask();
   };
+
+  // const mappedSubtasks = subtasks.map((subtask, index) => (
+  //   <SubtaskInputNew
+  //     key={index}
+  //     id={index}
+  //     subtasks={subtasks}
+  //     setSubtasks={setSubtasks}
+  //   />
+  // ));
 
   return (
     <div
@@ -80,20 +125,17 @@ export default function NewTaskForm(props: {
         ></textarea>
 
         {/* SUBTASKS */}
-        <label htmlFor="subtasks" className="mb-2 text-body-md">
+        {/* <label htmlFor="subtasks" className="mb-2 text-body-md">
           Subtasks
         </label>
-        {/* SUBTASKS CONTAINER */}
-        <div className="flex flex-col gap-3 mb-3">
-          <SubtaskInput />
-        </div>
-        {/* ADD NEW SUBTASK BUTTON */}
+        <div className="flex flex-col gap-3 mb-3">{mappedSubtasks}</div>
         <button
+          onClick={addNewSubtask}
           type="button"
           className="text-body-md text-main-purple bg-white-custom h-[40px] w-full rounded-full mb-6"
         >
           + Add New Subtask
-        </button>
+        </button> */}
 
         <label htmlFor="status" className="mb-2 text-body-md">
           Status
@@ -113,10 +155,11 @@ export default function NewTaskForm(props: {
           )}
           {/* STATUS LIST */}
           {statusListIsActive && (
-            <StatusList
+            <StatusListNew
               columns={props.columns}
               status={status}
               setStatus={setStatus}
+              setStatusId={setStatusId}
             />
           )}
         </button>

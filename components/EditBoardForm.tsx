@@ -1,18 +1,26 @@
 import { useCallback, useState } from "react";
 import ColumnInput from "./ColumnInput";
+import { supabase } from "@/utils/client";
 
 export default function EditBoardForm(props: {
   activeBoard: string;
   activeBoardId: string;
-  columns: {
-    board_id: string;
-    color: string;
-    column: string;
-    id: string;
-    map: any;
-  };
+  columns: [
+    {
+      board_id: string;
+      color: string;
+      column: string;
+      id: string;
+      map: any;
+    }
+  ];
+  setBoardList: React.Dispatch<React.SetStateAction<boolean>>;
   setEditBoardFormIsActive: React.Dispatch<React.SetStateAction<boolean>>;
+  setColumns: React.Dispatch<React.SetStateAction<boolean>>;
+  setActiveBoard: React.Dispatch<React.SetStateAction<string>>;
+  setActiveBoardId: React.Dispatch<React.SetStateAction<string>>;
 }) {
+  const [updateColumn, setUpdateColumn] = useState(false);
   const [boardNameInput, setBoardNameInput] = useState(props.activeBoard);
   const handleBoardNameInputChange = useCallback(
     (event: React.ChangeEvent<any>) => {
@@ -20,12 +28,34 @@ export default function EditBoardForm(props: {
     },
     []
   );
-  const [updateColumn, setUpdateColumn] = useState(false);
+
+  async function fetchBoards() {
+    const { data, error } = await supabase
+      .from("users")
+      .select(`boards (*)`)
+      .eq("email", "nikosetiawanp@gmail.com");
+    if (error) return error;
+    props.setBoardList(data[0].boards);
+    props.setActiveBoard(data[0].boards[0].board);
+    props.setActiveBoardId(data[0].boards[0].id);
+  }
+
+  const updateBoard = async () => {
+    const { data, error } = await supabase
+      .from("boards")
+      .update({ board: boardNameInput })
+      .eq("id", props.activeBoardId)
+      .select();
+    if (error) console.log(error);
+  };
 
   const handleFormSubmit = (e: React.ChangeEvent<any>) => {
     e.preventDefault();
+    updateBoard();
+    fetchBoards();
     setUpdateColumn((current) => !current);
-    alert("form submitted");
+    console.log(updateColumn);
+    props.setEditBoardFormIsActive(false);
   };
 
   const mappedColumnInput = props.columns.map((column) => (
@@ -34,8 +64,26 @@ export default function EditBoardForm(props: {
       id={column.id}
       column={column.column}
       updateColumn={updateColumn}
+      setColumns={props.setColumns}
     />
   ));
+
+  const addNewColumn = async () => {
+    const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    const randomColor = colors[randomIndex];
+    const { data, error } = await supabase
+      .from("columns")
+      .insert([
+        {
+          column: "New Column",
+          board_id: props.activeBoardId,
+          color: randomColor,
+        },
+      ])
+      .select();
+    props.setColumns((current) => [...current, data[0]]);
+  };
 
   return (
     <div
@@ -72,6 +120,7 @@ export default function EditBoardForm(props: {
         {/* ADD NEW SUBTASK BUTTON */}
         <button
           type="button"
+          onClick={addNewColumn}
           className="text-body-md text-main-purple bg-white-custom h-[40px] w-full rounded-full mb-6"
         >
           + Add New Column

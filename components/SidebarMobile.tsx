@@ -2,6 +2,7 @@ import IconBoard from "../assets/icon-board.svg";
 import IconBoardWhite from "../assets/icon-board-white.svg";
 import IconBoardPurple from "../assets/icon-board-purple.svg";
 import Image from "next/image";
+import { supabase } from "@/utils/client";
 
 interface Board {
   id: string;
@@ -10,14 +11,15 @@ interface Board {
 
 export default function BoardsSelection(props: {
   activeBoard: string;
+  activeBoardId: string;
   boardList: Board[];
+  setBoardList: React.Dispatch<React.SetStateAction<any>>;
   setSidebarIsActive: React.Dispatch<React.SetStateAction<boolean>>;
   setActiveBoard: React.Dispatch<React.SetStateAction<string>>;
   setActiveBoardId: React.Dispatch<React.SetStateAction<string>>;
-  setEditBoardFormIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const mappedBoardList = props.boardList.map((board) =>
-    props.activeBoard === board.board ? (
+    props.activeBoardId === board.id ? (
       // SELECTED BOARD
       <button
         key={board.id}
@@ -43,10 +45,23 @@ export default function BoardsSelection(props: {
       </button>
     )
   );
+  const addNewBoard = async () => {
+    const { data, error } = await supabase
+      .from("boards")
+      .insert([{ board: "New Board", user_email: "nikosetiawanp@gmail.com" }])
+      .select();
+    props.setBoardList((current) => [...current, data[0]]);
+  };
 
   return (
-    <div className="w-screen h-screen bg-black-overlay fixed flex justify-center z-50 top-0 left-0 p-24 md:hidden">
-      <div className="pr-6 pb-3 bg-dark-grey absolute rounded-lg min-w-[265px] flex flex-col">
+    <div
+      onClick={() => props.setSidebarIsActive(false)}
+      className="w-screen h-screen bg-black-overlay fixed flex justify-center z-50 top-0 left-0 p-24 md:hidden"
+    >
+      <div
+        onClick={(event) => event.stopPropagation()}
+        className="pr-6 pb-3 bg-dark-grey absolute rounded-lg min-w-[265px] flex flex-col"
+      >
         <span className="text-medium-grey text-heading-sm mb-4 mt-4 ml-6 ">
           ALL BOARDS ({props.boardList.length})
         </span>
@@ -55,8 +70,7 @@ export default function BoardsSelection(props: {
         {/* CREATE NEW BOARD */}
         <button
           onClick={() => {
-            props.setEditBoardFormIsActive(true);
-            props.setSidebarIsActive(false);
+            addNewBoard();
           }}
           className="text-heading-md flex items-center gap-4 w-[100%] px-6 py-4 rounded-r-full text-main-purple"
         >

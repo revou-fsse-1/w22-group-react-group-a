@@ -1,9 +1,11 @@
-import CircleBlue from "../assets/circle-blue.svg";
-import CircleGreen from "../assets/circle-green.svg";
-import CirclePurple from "../assets/circle-purple.svg";
-import CircleRed from "../assets/circle-red.svg";
 import { supabase } from "@/utils/client";
 import { useEffect, useState } from "react";
+import CircleRed from "../assets/circle-red.svg";
+import CircleOrange from "../assets/circle-orange.svg";
+import CircleYellow from "../assets/circle-yellow.svg";
+import CircleGreen from "../assets/circle-green.svg";
+import CircleBlue from "../assets/circle-blue.svg";
+import CirclePurple from "../assets/circle-purple.svg";
 
 import Image from "next/image";
 import Task from "./Task";
@@ -35,7 +37,7 @@ export default function Column(props: {
   }
   useEffect(() => {
     fetchTasks();
-  }, [tasks]);
+  }, [setTasks]);
 
   const mappedTasks = tasks.map((task) => (
     <Task
@@ -55,17 +57,21 @@ export default function Column(props: {
       <span className="flex gap-4 text-heading-sm text-medium-grey mb-2">
         <Image
           src={
-            props.data.color === "blue"
-              ? CircleBlue
+            props.data.color === "red"
+              ? CircleRed
+              : props.data.color === "orange"
+              ? CircleOrange
+              : props.data.color === "yellow"
+              ? CircleYellow
               : props.data.color === "green"
               ? CircleGreen
-              : props.data.color === "purple"
-              ? CirclePurple
-              : CircleRed
+              : props.data.color === "blue"
+              ? CircleBlue
+              : CirclePurple
           }
           alt="circle-blue"
         />
-        {props.data.column.toLocaleUpperCase()} (4)
+        {props.data.column.toUpperCase()} ({tasks.length})
       </span>
       {mappedTasks}
     </div>

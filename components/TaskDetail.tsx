@@ -11,6 +11,7 @@ import EditDeleteTask from "./EditDeleteTask";
 import DeleteTaskConfirm from "./DeleteTaskConfirm";
 import EditTaskForm from "./EditTaskForm";
 import Subtask from "./Subtask";
+import { supabase } from "@/utils/client";
 
 export default function TaskDetail(props: {
   id: string;
@@ -26,6 +27,7 @@ export default function TaskDetail(props: {
   columns: string[];
   status: string;
   setTaskDetailIsActive: React.Dispatch<React.SetStateAction<boolean>>;
+  activeBoardId: string;
 }) {
   const [status, setStatus] = useState(props.status);
   const [completedTaskCount, setCompletedTaskCount] = useState(
@@ -37,8 +39,6 @@ export default function TaskDetail(props: {
   const [deleteTaskConfirmIsActive, setDeleteTaskConfirmIsActive] =
     useState(false);
   const toggleStatusList = () => {
-    console.log(props.id);
-
     setStatusListIsActive((current) => !current);
   };
 
@@ -139,6 +139,7 @@ export default function TaskDetail(props: {
 
       {deleteTaskConfirmIsActive && (
         <DeleteTaskConfirm
+          id={props.id}
           task={props.task}
           setDeleteTaskConfirmIsActive={setDeleteTaskConfirmIsActive}
         />

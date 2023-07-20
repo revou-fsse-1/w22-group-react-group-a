@@ -35,14 +35,10 @@ export default function Board() {
   const [newTaskFormIsActive, setNewTaskFormIsActive] = useState(false);
   const [editBoardFormIsActive, setEditBoardFormIsActive] = useState(false);
   const [newBoardFormIsActive, setNewBoardFormIsActive] = useState(false);
-  const [editTaskFormIsActive, setEditTaskFormIsActive] = useState(false);
   const [deleteBoardConfirmIsActive, setDeleteBoardConfirmIsActive] =
     useState(false);
   const toggleEditDeleteBoard = () => {
     setEditDeleteBoardIsActive((current) => !current);
-  };
-  const toggleEditTaskForm = () => {
-    setEditTaskFormIsActive((current) => !current);
   };
 
   // DATA
@@ -62,6 +58,7 @@ export default function Board() {
     setActiveBoard(data[0].boards[0].board);
     setActiveBoardId(data[0].boards[0].id);
   }
+
   useEffect(() => {
     fetchBoards();
   }, []);
@@ -76,7 +73,24 @@ export default function Board() {
   }
   useEffect(() => {
     fetchAllColumns();
-  }, [activeBoardId]);
+  }, [activeBoardId, boardList]);
+
+  const addNewColumn = async () => {
+    const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    const randomColor = colors[randomIndex];
+    const { data, error } = await supabase
+      .from("columns")
+      .insert([
+        {
+          column: "New Column",
+          board_id: activeBoardId,
+          color: randomColor,
+        },
+      ])
+      .select();
+    fetchAllColumns();
+  };
 
   const mappedColumn = columns.map((column) => (
     <Column key={column.id} data={column} columns={columns} />
@@ -94,11 +108,12 @@ export default function Board() {
         {sidebarIsActive && (
           <Sidebar
             activeBoard={activeBoard}
+            activeBoardId={activeBoardId}
             boardList={boardList}
+            setBoardList={setBoardList}
             setSidebarIsActive={setSidebarIsActive}
             setActiveBoard={setActiveBoard}
             setActiveBoardId={setActiveBoardId}
-            setEditBoardFormIsActive={setEditBoardFormIsActive}
           />
         )}
 
@@ -138,19 +153,27 @@ export default function Board() {
             </button>
             <div className="flex justify-center items-center gap-6 ml-auto">
               {/* ADD NEW TASK MOBILE */}
-              <button
-                onClick={() => setNewTaskFormIsActive(true)}
-                className="bg-main-purple w-[48px] h-[32px] rounded-full text-heading-md flex justify-center items-center hover:cursor-pointer hover:bg-main-purple-hover md:hidden"
-              >
-                <Image priority src={IconPlus} alt="icon-plus" />
-              </button>
+
+              {columns.length > 0 && (
+                <button
+                  onClick={() => setNewTaskFormIsActive(true)}
+                  className="bg-main-purple w-[48px] h-[32px] rounded-full text-heading-md flex justify-center items-center hover:cursor-pointer hover:bg-main-purple-hover md:hidden"
+                >
+                  <Image priority src={IconPlus} alt="icon-plus" />
+                </button>
+              )}
+
               {/* ADD NEW TASK TABLET & DESKTOP */}
-              <button
-                onClick={() => setNewTaskFormIsActive(true)}
-                className="hidden md:block bg-main-purple text-heading-md p-4 px-6 rounded-full hover:bg-main-purple-hover"
-              >
-                + Add New Task
-              </button>
+
+              {columns.length > 0 && (
+                <button
+                  onClick={() => setNewTaskFormIsActive(true)}
+                  className="hidden md:block bg-main-purple text-heading-md p-4 px-6 rounded-full hover:bg-main-purple-hover"
+                >
+                  + Add New Task
+                </button>
+              )}
+
               {/* EDIT DELETE TOGGLE BUTTON */}
 
               <button
@@ -179,11 +202,12 @@ export default function Board() {
           {sidebarIsActive && (
             <SidebarMobile
               activeBoard={activeBoard}
+              activeBoardId={activeBoardId}
               boardList={boardList}
+              setBoardList={setBoardList}
               setSidebarIsActive={setSidebarIsActive}
               setActiveBoard={setActiveBoard}
               setActiveBoardId={setActiveBoardId}
-              setEditBoardFormIsActive={setEditBoardFormIsActive}
             />
           )}
 
@@ -197,18 +221,35 @@ export default function Board() {
           {deleteBoardConfirmIsActive && (
             <DeleteBoardConfirm
               activeBoard={activeBoard}
+              setActiveBoard={setActiveBoard}
+              activeBoardId={activeBoardId}
+              setActiveBoardId={setActiveBoardId}
               setDeleteBoardConfirmIsActive={setDeleteBoardConfirmIsActive}
+              setBoardList={setBoardList}
             />
           )}
 
           {/* VIEWPORT */}
           <section className="w-full h-full flex p-4 pt-6 gap-6 overflow-auto scrollbar-hide mb-6">
             {/* COLUMN */}
-            {columns.length > 0 ? mappedColumn : <EmptyBoardMessage />}
-
+            {columns.length > 0 ? (
+              mappedColumn
+            ) : (
+              <div className="flex flex-col w-full items-center justify-center gap-8">
+                <span className="text-heading-lg text-center text-medium-grey">
+                  This board is empty. Create a new column to get started
+                </span>
+                <button
+                  onClick={addNewColumn}
+                  className="bg-main-purple text-heading-md p-4 px-6 rounded-full hover:bg-main-purple-hover"
+                >
+                  + Add New Column
+                </button>
+              </div>
+            )}
             {columns.length > 0 && (
               <button
-                onClick={() => setEditBoardFormIsActive(true)}
+                onClick={addNewColumn}
                 className="flex justify-center items-center text-heading-xl text-medium-grey w-[280px] min-w-[280px] h-[815px] bg-gradient-to-b from-dark-grey/25 to-dark-grey/10 rounded-md mt-6"
               >
                 + New Column
@@ -228,13 +269,17 @@ export default function Board() {
             <Image src={IconShowSidebar} alt="icon-show-sidebar" />
           </button>
         )}
-        {newBoardFormIsActive && <NewBoardForm />}
+        {newBoardFormIsActive && <NewBoardForm activeBoardId={activeBoardId} />}
         {editBoardFormIsActive && (
           <EditBoardForm
             activeBoard={activeBoard}
             activeBoardId={activeBoardId}
             columns={columns}
             setEditBoardFormIsActive={setEditBoardFormIsActive}
+            setColumns={setColumns}
+            setBoardList={setBoardList}
+            setActiveBoard={setActiveBoard}
+            setActiveBoardId={setActiveBoardId}
           />
         )}
       </div>
