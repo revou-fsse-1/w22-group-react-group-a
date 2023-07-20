@@ -96,14 +96,9 @@ const handleLogin: SubmitHandler<LoginForm> = async (data) => {
       email: data.email,
       password: data.password,
     });
-
     if (response.error) {
       throw new Error((response.error as AuthError).message);
     }
-    const accessToken = response.data.session.access_token;
-    const email = response.data.user.email;
-    localStorage.setItem('accessToken', accessToken);
-    localStorage.setItem('email', email);
     router.push('/board');
   } catch (error: any) {
     console.error("Login error:", error.message);

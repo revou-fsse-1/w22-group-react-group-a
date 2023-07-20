@@ -1,6 +1,15 @@
-import "@/styles/globals.css";
-import type { AppProps } from "next/app";
+import { AppProps } from "next/app";
+import PrivateRoute from "@/components/PrivateRoute";
+import "tailwindcss/tailwind.css";
+import '@/styles/globals.css'
 
-export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
-}
+
+const App: React.FC<AppProps> = ({ Component, pageProps }) => {
+  return (
+    <PrivateRoute>
+      <Component {...pageProps} />
+    </PrivateRoute>
+  );
+};
+
+export default App;
