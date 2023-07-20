@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import IconChevronDown from "../assets/icon-chevron-down.svg";
 import IconChevronUp from "../assets/icon-chevron-up.svg";
@@ -13,28 +13,26 @@ import EditTaskForm from "./EditTaskForm";
 import Subtask from "./Subtask";
 import { supabase } from "@/utils/client";
 
-export default function TaskDetail(props: {
-  id: string;
+interface TaskDetail {
   task: string;
   description: string;
-  subtasks: [
-    {
-      id: string;
-      is_completed: boolean;
-      subtask: string;
-    }
-  ];
+}
+
+interface Subtask {
+  id: string;
+  subtask: string;
+  is_completed: boolean;
+}
+
+export default function TaskDetail(props: {
+  taskId: string;
   columns: string[];
   status: string;
   setTaskDetailIsActive: React.Dispatch<React.SetStateAction<boolean>>;
-  activeBoardId: string;
-  rerenderTasks: boolean;
-  setRerenderTasks: React.Dispatch<React.SetStateAction<boolean>>;
+  completedTaskCount: number;
+  setCompletedTaskCount: React.Dispatch<React.SetStateAction<any>>;
 }) {
   const [status, setStatus] = useState(props.status);
-  const [completedTaskCount, setCompletedTaskCount] = useState(
-    props.subtasks.filter((subtask) => subtask.is_completed == true).length
-  );
   const [statusListIsActive, setStatusListIsActive] = useState(false);
   const [editTaskFormIsActive, setEditTaskFormIsActive] = useState(false);
   const [editDeleteTaskIsActive, setEditDeleteTaskIsActive] = useState(false);
@@ -44,15 +42,39 @@ export default function TaskDetail(props: {
     setStatusListIsActive((current) => !current);
   };
 
-  const mappedSubtasks = props.subtasks.map((subtask) => (
+  const [taskDetail, setTaskDetail] = useState<TaskDetail>({});
+  const [subtasks, setSubtasks] = useState<Subtask[]>([]);
+
+  const fetchTaskDetail = async () => {
+    const { data, error } = await supabase
+      .from("tasks")
+      .select("*")
+      .eq("id", props.taskId);
+    if (error) return error;
+    setTaskDetail(data[0]);
+  };
+
+  const fetchSubtasks = async () => {
+    const { data, error } = await supabase
+      .from("subtasks")
+      .select("*")
+      .eq("task_id", props.taskId);
+    if (error) return error;
+    setSubtasks(data);
+  };
+
+  useEffect(() => {
+    fetchTaskDetail();
+    fetchSubtasks();
+  }, []);
+
+  const mappedSubtasks = subtasks.map((subtask) => (
     <Subtask
       key={subtask.id}
       id={subtask.id}
       subtask={subtask.subtask}
       is_completed={subtask.is_completed}
-      setCompletedTaskCount={setCompletedTaskCount}
-      rerenderTasks={props.rerenderTasks}
-      setRerenderTasks={props.setRerenderTasks}
+      setCompletedTaskCount={props.setCompletedTaskCount}
     />
   ));
 
@@ -75,7 +97,7 @@ export default function TaskDetail(props: {
           className="flex flex-col w-full max-w-[480px] h-fit p-6 rounded-md bg-dark-grey"
         >
           <div className="mb-6 gap-8 flex justify-between items-center">
-            <h3 className="text-heading-lg">{props.task}</h3>
+            <h3 className="text-heading-lg">{taskDetail.task}</h3>
             <button
               onClick={(event) => {
                 event?.stopPropagation();
@@ -100,13 +122,13 @@ export default function TaskDetail(props: {
             </button>
           </div>
           <p className="text-body-lg mb-6 text-medium-grey">
-            {props.description}
+            {taskDetail.description}
           </p>
 
           {/* SUBTASKS */}
           <label htmlFor="subtasks" className="mb-4 text-body-md">
-            Subtasks ({completedTaskCount} &nbsp; of &nbsp;{" "}
-            {props.subtasks.length})
+            Subtasks ({props.completedTaskCount} &nbsp; of &nbsp;{" "}
+            {subtasks.length})
           </label>
 
           {/* SUBTASKS CONTAINER */}
@@ -143,18 +165,18 @@ export default function TaskDetail(props: {
 
       {deleteTaskConfirmIsActive && (
         <DeleteTaskConfirm
-          id={props.id}
-          task={props.task}
+          id={props.taskId}
+          task={taskDetail.task}
           setDeleteTaskConfirmIsActive={setDeleteTaskConfirmIsActive}
         />
       )}
       {editTaskFormIsActive && (
         <EditTaskForm
-          key={props.id}
-          id={props.id}
-          task={props.task}
-          description={props.description}
-          subtasks={props.subtasks}
+          key={props.taskId}
+          id={props.taskId}
+          task={taskDetail.task}
+          description={taskDetail.description}
+          subtasks={subtasks}
           columns={props.columns}
           status={props.status}
           setEditTaskFormIsActive={setEditTaskFormIsActive}

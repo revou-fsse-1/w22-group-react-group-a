@@ -8,8 +8,6 @@ export default function Subtask(props: {
   subtask: string;
   is_completed: boolean;
   setCompletedTaskCount: React.Dispatch<React.SetStateAction<number>>;
-  rerenderTasks: boolean;
-  setRerenderTasks: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [isCompleted, setIsCompleted] = useState(false);
   useEffect(() => {
