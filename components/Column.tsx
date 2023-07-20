@@ -26,8 +26,6 @@ export default function Column(props: {
   columns: string[];
 }) {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [rerenderTasks, setRerenderTasks] = useState(false);
-
   const fetchTasks = useCallback(async () => {
     const { data, error } = await supabase
       .from("tasks")
@@ -37,14 +35,6 @@ export default function Column(props: {
     setTasks(data);
   }, []);
 
-  // async function fetchTasks() {
-  //   const { data, error } = await supabase
-  //     .from("tasks")
-  //     .select("id, task, description, subtasks (*)")
-  //     .eq("column_id", props.data.id);
-  //   if (error) return error;
-  //   setTasks(data);
-  // }
   useEffect(() => {
     fetchTasks();
   }, []);
@@ -52,14 +42,11 @@ export default function Column(props: {
   const mappedTasks = tasks.map((task) => (
     <Task
       key={task.id}
-      id={task.id}
-      task={task.task}
-      subtasks={task.subtasks}
+      taskId={task.id}
       description={task.description}
       status={props.data.column}
+      statusId={props.data.id}
       columns={props.columns}
-      rerenderTasks={rerenderTasks}
-      setRerenderTasks={setRerenderTasks}
     />
   ));
 
