@@ -3,6 +3,7 @@ import IconCross from "../assets/icon-cross.svg";
 import { useCallback, useEffect, useState } from "react";
 
 export default function SubtaskInput(props: {
+  id: number;
   subtasks: [
     {
       id: number;

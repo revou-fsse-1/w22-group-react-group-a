@@ -6,7 +6,6 @@ import { supabase } from "@/utils/client";
 export default function ColumnInput(props: {
   column: string;
   id: string;
-  updateColumn: boolean;
   setColumns: React.Dispatch<React.SetStateAction<any>>;
   setRerenderBoard: React.Dispatch<React.SetStateAction<any>>;
   setRerenderColumn: React.Dispatch<React.SetStateAction<any>>;

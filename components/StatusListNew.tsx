@@ -1,15 +1,18 @@
 import { supabase } from "@/utils/client";
+
+interface Column {
+  id: string;
+  column: string;
+  color: string;
+}
+
 export default function StatusList(props: {
   setStatus: React.Dispatch<React.SetStateAction<string>>;
   setStatusId: React.Dispatch<React.SetStateAction<string>>;
 
   id: string;
   status: string;
-  columns: {
-    column: string;
-    id: string;
-    map: any;
-  };
+  columns: Column[];
 }) {
   // map columns
   const updateStatus = async (column: string, columnId: string) => {

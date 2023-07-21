@@ -7,31 +7,19 @@ export default function DeleteBoardConfirm(props: {
   setActiveBoardId: React.Dispatch<React.SetStateAction<any>>;
   setDeleteBoardConfirmIsActive: React.Dispatch<React.SetStateAction<boolean>>;
   setBoardList: React.Dispatch<React.SetStateAction<any>>;
+  setRerenderBoard: React.Dispatch<React.SetStateAction<any>>;
 }) {
   const hideDeleteBoardConfirm = () => {
     props.setDeleteBoardConfirmIsActive(false);
   };
-
-  async function fetchBoards() {
-    const { data, error } = await supabase
-      .from("users")
-      .select(`boards (*)`)
-      .eq("email", "nikosetiawanp@gmail.com");
-    if (error) return error;
-    props.setBoardList(data[0].boards);
-    props.setActiveBoard(data[0].boards[0].board);
-    props.setActiveBoardId(data[0].boards[0].id);
-  }
 
   const deleteBoard = async () => {
     const { error } = await supabase
       .from("boards")
       .delete()
       .eq("id", props.activeBoardId);
-
-    console.log(error);
     props.setDeleteBoardConfirmIsActive(false);
-    fetchBoards();
+    props.setRerenderBoard((current: string[]) => [...current, ""]);
   };
 
   return (

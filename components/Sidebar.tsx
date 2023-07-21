@@ -20,11 +20,12 @@ export default function Sidebar(props: {
   setActiveBoard: React.Dispatch<React.SetStateAction<string>>;
   setActiveBoardId: React.Dispatch<React.SetStateAction<string>>;
   setRerenderBoard: React.Dispatch<React.SetStateAction<any>>;
+  userId: string;
 }) {
   const addNewBoard = async () => {
     const { data, error } = await supabase
       .from("boards")
-      .insert([{ board: "New Board", user_email: "nikosetiawanp@gmail.com" }])
+      .insert([{ board: "New Board", user_id: props.userId }])
       .select();
     props.setRerenderBoard((current: string[]) => [...current, ""]);
   };

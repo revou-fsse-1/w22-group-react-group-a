@@ -5,7 +5,7 @@ export default function DeleteTaskConfirm(props: {
   task: string;
   setDeleteTaskConfirmIsActive: React.Dispatch<React.SetStateAction<boolean>>;
   setTaskDetailIsActive: React.Dispatch<React.SetStateAction<boolean>>;
-  rerenderColumn: string;
+  rerenderColumn: string[];
   setRerenderColumn: React.Dispatch<React.SetStateAction<any>>;
 }) {
   const hideDeleteTaskConfirm = () => {
