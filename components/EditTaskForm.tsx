@@ -8,6 +8,12 @@ import SubtaskInput from "./SubtaskInput";
 import StatusList from "./StatusList";
 import { supabase } from "@/utils/client";
 
+interface Column {
+  id: string;
+  column: string;
+  color: string;
+}
+
 interface Subtask {
   id?: string;
   is_completed: boolean;
@@ -19,20 +25,8 @@ export default function EditTaskForm(props: {
   taskId: string;
   task: string;
   description: string;
-  subtasks: [
-    {
-      id: string;
-      subtask: string;
-      is_completed: boolean;
-    }
-  ];
-  columns: [
-    {
-      id: string;
-      column: string;
-      color: string;
-    }
-  ];
+  subtasks: Subtask[];
+  columns: Column[];
   status: string;
   setEditTaskFormIsActive: React.Dispatch<React.SetStateAction<boolean>>;
   setRerenderTaskDetail: React.Dispatch<React.SetStateAction<any>>;
@@ -41,7 +35,6 @@ export default function EditTaskForm(props: {
   const [statusId, setStatusId] = useState(props.status);
   const [titleInput, setTitleInput] = useState(props.task);
   const [descriptionInput, setDescriptionInput] = useState(props.description);
-
   const [subtasks, setSubtasks] = useState<Subtask[]>([
     {
       id: "",
@@ -68,13 +61,31 @@ export default function EditTaskForm(props: {
     },
     []
   );
+  // const fetchSubtasks = async () => {
+  //   const { data, error } = await supabase
+  //     .from("subtasks")
+  //     .select(`( * )`)
+  //     .eq("task_id", props.taskId);
+  //   if (error) return error;
+  //   setSubtasks(data);
+  // };
   const fetchSubtasks = async () => {
-    const { data, error } = await supabase
-      .from("subtasks")
-      .select(`( * )`)
-      .eq("task_id", props.taskId);
-    if (error) return error;
-    setSubtasks(data);
+    try {
+      const { data, error } = (await supabase
+        .from("subtasks")
+        .select("*")
+        .eq("task_id", props.taskId)) as { data: Subtask[]; error: any };
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      if (data) {
+        setSubtasks(data);
+      }
+    } catch (error) {
+      console.error("Error fetching subtasks:", error);
+    }
   };
 
   useEffect(() => {
@@ -96,7 +107,7 @@ export default function EditTaskForm(props: {
   const mappedSubtasks = subtasks.map((subtask, index) => (
     <SubtaskInput
       key={subtasks[index].id}
-      id={subtasks[index].id}
+      id={subtasks[index].id!}
       index={index}
       subtask={subtasks[index].subtask}
       is_completed={subtasks[index].is_completed}
@@ -206,7 +217,6 @@ export default function EditTaskForm(props: {
               id={props.taskId}
               columns={props.columns}
               status={status}
-              setStatusId={setStatusId}
               setStatus={setStatus}
             />
           )}

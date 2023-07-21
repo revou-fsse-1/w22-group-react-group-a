@@ -10,6 +10,12 @@ import SubtaskInput from "./SubtaskInput";
 import SubtaskInputNew from "./SubtaskInputNew";
 import { create } from "domain";
 
+interface Column {
+  id: string;
+  column: string;
+  color: string;
+}
+
 interface Subtask {
   id?: string;
   is_completed: boolean;
@@ -19,13 +25,12 @@ interface Subtask {
 
 export default function NewTaskForm(props: {
   newTaskFormIsActive: boolean;
-  columns: string[];
+  columns: Column[];
   setNewTaskFormIsActive: React.Dispatch<React.SetStateAction<boolean>>;
   setRerenderColumn: React.Dispatch<React.SetStateAction<any>>;
 }) {
   // STATUS LIST
   const taskId = crypto.randomUUID();
-  // const [taskId, setTaskId] = useState();
   const [statusListIsActive, setStatusListIsActive] = useState(false);
   const [titleInput, setTitleInput] = useState("");
   const [descriptionInput, setDescriptionInput] = useState("");
@@ -138,6 +143,7 @@ export default function NewTaskForm(props: {
           {/* STATUS LIST */}
           {statusListIsActive && (
             <StatusListNew
+              id={taskId}
               columns={props.columns}
               status={status}
               setStatus={setStatus}

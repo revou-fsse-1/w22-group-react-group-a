@@ -26,7 +26,7 @@ interface Column {
 export default function Column(props: {
   columnId: string;
   columnData: { id: string; column: string; color: string };
-  columns: string[];
+  columns: Column[];
   rerenderColumn: string[];
   setRerenderColumn: React.Dispatch<React.SetStateAction<any>>;
 }) {
@@ -45,7 +45,6 @@ export default function Column(props: {
       .eq("id", props.columnId);
     if (error) return error;
     setColumn(data[0]);
-    console.log(data[0]);
   };
 
   const fetchTasks = async () => {

@@ -2,6 +2,12 @@ import TaskDetail from "@/components/TaskDetail";
 import { supabase } from "@/utils/client";
 import { useState, useEffect } from "react";
 
+interface Column {
+  id: string;
+  column: string;
+  color: string;
+}
+
 interface TaskDetail {
   task: string;
   description: string;
@@ -15,7 +21,7 @@ interface Subtask {
 export default function Task(props: {
   taskId: string;
   description: string;
-  columns: string[];
+  columns: Column[];
   column: string;
   statusId: string;
   rerenderColumn: string[];

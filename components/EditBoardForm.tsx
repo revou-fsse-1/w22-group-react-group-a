@@ -12,18 +12,8 @@ interface Column {
 export default function EditBoardForm(props: {
   activeBoard: string;
   activeBoardId: string;
-  columns: [
-    {
-      board_id: string;
-      color: string;
-      column: string;
-      id: string;
-      map: any;
-    }
-  ];
-  setBoardList: React.Dispatch<React.SetStateAction<boolean>>;
+  columns: Column[];
   setEditBoardFormIsActive: React.Dispatch<React.SetStateAction<boolean>>;
-  setColumns: React.Dispatch<React.SetStateAction<boolean>>;
   setActiveBoard: React.Dispatch<React.SetStateAction<string>>;
   setActiveBoardId: React.Dispatch<React.SetStateAction<string>>;
   setRerenderBoard: React.Dispatch<React.SetStateAction<any>>;

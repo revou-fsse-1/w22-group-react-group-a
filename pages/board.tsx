@@ -21,6 +21,11 @@ import DeleteBoardConfirm from "@/components/DeleteBoardConfirm";
 import NewBoardForm from "@/components/NewBoardForm";
 import EditBoardForm from "@/components/EditBoardForm";
 
+interface Board {
+  id: string;
+  board: string;
+}
+
 interface Column {
   board_id: string;
   color: string;
@@ -29,6 +34,20 @@ interface Column {
 }
 
 export default function Board() {
+  const [userId, setUserId] = useState("");
+  const getUserData = async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return;
+    setUserId(user.id);
+    console.log(user.id);
+  };
+
+  useEffect(() => {
+    getUserData();
+  }, []);
+
   const [sidebarIsActive, setSidebarIsActive] = useState(false);
   const [editDeleteBoardIsActive, setEditDeleteBoardIsActive] = useState(false);
   const [newTaskFormIsActive, setNewTaskFormIsActive] = useState(false);
@@ -41,23 +60,42 @@ export default function Board() {
   };
 
   // DATA
-  const [boardList, setBoardList] = useState([{ id: "", board: "" }]);
+  const [boardList, setBoardList] = useState<Board[]>([{ id: "", board: "" }]);
   const [activeBoard, setActiveBoard] = useState("");
   const [activeBoardId, setActiveBoardId] = useState("");
   const [columns, setColumns] = useState<Column[]>([]);
   const [rerenderBoard, setRerenderBoard] = useState([]);
   const [rerenderColumn, setRerenderColumn] = useState([]);
   // FETCH
+  // async function fetchBoards() {
+  //   const { data, error } = await supabase
+  //     .from("users")
+  //     .select(`boards (*)`)
+  //     .eq("email", "nikosetiawanp@gmail.com");
+  //   if (error) return error;
+  //   setBoardList(data[0].boards);
+  //   if (activeBoard === "") setActiveBoard(data[0].boards[0].board);
+  //   if (activeBoardId === "") setActiveBoardId(data[0].boards[0].id);
+  // }
+
   async function fetchBoards() {
-    const { data, error } = await supabase
-      .from("users")
-      .select(`boards (*)`)
-      .eq("email", "nikosetiawanp@gmail.com");
+    // const { data, error } = await supabase
+    //   .from("boards")
+    //   .select("*")
+    //   .eq("email", "nikosetiawanp@gmail.com");
+
+    let { data: boards, error } = await supabase
+      .from("boards")
+      .select("*")
+      .eq("user_id", userId);
+    console.log(boards);
+    if (!boards) return error;
     if (error) return error;
-    setBoardList(data[0].boards);
-    if (activeBoard === "") setActiveBoard(data[0].boards[0].board);
-    if (activeBoardId === "") setActiveBoardId(data[0].boards[0].id);
+    setBoardList(boards);
+    if (activeBoard === "") setActiveBoard(boards[0].board);
+    if (activeBoardId === "") setActiveBoardId(boards[0].id);
   }
+
   const fetchAllColumns = async () => {
     const { data, error } = await supabase
       .from("columns")
@@ -72,13 +110,13 @@ export default function Board() {
       fetchBoards();
     }, 100);
     setActiveBoard(activeBoard);
-  }, [rerenderBoard]);
+  }, [rerenderBoard, userId]);
 
   useEffect(() => {
     setTimeout(() => {
       fetchAllColumns();
     }, 100);
-  }, [activeBoard, activeBoardId, rerenderBoard, rerenderColumn]);
+  }, [activeBoard, activeBoardId, rerenderBoard, rerenderColumn, userId]);
 
   const addNewColumn = async () => {
     const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
@@ -127,6 +165,7 @@ export default function Board() {
             setActiveBoard={setActiveBoard}
             setActiveBoardId={setActiveBoardId}
             setRerenderBoard={setRerenderBoard}
+            userId={userId}
           />
         )}
 
@@ -221,6 +260,8 @@ export default function Board() {
               setSidebarIsActive={setSidebarIsActive}
               setActiveBoard={setActiveBoard}
               setActiveBoardId={setActiveBoardId}
+              setRerenderBoard={setRerenderBoard}
+              userId={userId}
             />
           )}
 
@@ -240,6 +281,7 @@ export default function Board() {
               setActiveBoardId={setActiveBoardId}
               setDeleteBoardConfirmIsActive={setDeleteBoardConfirmIsActive}
               setBoardList={setBoardList}
+              setRerenderBoard={setRerenderBoard}
             />
           )}
 
@@ -290,8 +332,6 @@ export default function Board() {
             activeBoardId={activeBoardId}
             columns={columns}
             setEditBoardFormIsActive={setEditBoardFormIsActive}
-            setColumns={setColumns}
-            setBoardList={setBoardList}
             setActiveBoard={setActiveBoard}
             setActiveBoardId={setActiveBoardId}
             setRerenderColumn={setRerenderColumn}

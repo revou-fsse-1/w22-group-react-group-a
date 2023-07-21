@@ -4,12 +4,10 @@ import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/utils/client";
 
 export default function SubtaskInput(props: {
-  key: string;
   id: string;
   index: number;
   subtask: string;
   is_completed: boolean;
-  updateSubtask: boolean;
   setSubtasks: React.Dispatch<React.SetStateAction<any>>;
 }) {
   const handleSubtaskInputChange = (id: string, key: string, value: string) => {

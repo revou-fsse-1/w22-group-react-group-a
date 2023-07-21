@@ -13,6 +13,12 @@ import EditTaskForm from "./EditTaskForm";
 import Subtask from "./Subtask";
 import { supabase } from "@/utils/client";
 
+interface Column {
+  id: string;
+  column: string;
+  color: string;
+}
+
 interface TaskDetail {
   task: string;
   description: string;
@@ -20,25 +26,20 @@ interface TaskDetail {
 
 interface Subtask {
   id: string;
-  subtask: string;
   is_completed: boolean;
+  subtask: string;
+  task_id: string;
 }
 
 export default function TaskDetail(props: {
   taskId: string;
-  columns: [
-    {
-      id: string;
-      column: string;
-      color: string;
-    }
-  ];
+  columns: Column[];
   column: string;
   setTaskDetailIsActive: React.Dispatch<React.SetStateAction<boolean>>;
   completedTaskCount: number;
   setCompletedTaskCount: React.Dispatch<React.SetStateAction<any>>;
   setRerenderTask: React.Dispatch<React.SetStateAction<any>>;
-  rerenderColumn: string;
+  rerenderColumn: string[];
   setRerenderColumn: React.Dispatch<React.SetStateAction<any>>;
   setRerenderTaskList: React.Dispatch<React.SetStateAction<any>>;
 }) {
