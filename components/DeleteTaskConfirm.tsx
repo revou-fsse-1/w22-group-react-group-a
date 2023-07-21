@@ -17,7 +17,7 @@ export default function DeleteTaskConfirm(props: {
       <div className="bg-dark-grey p-8 flex flex-col gap-6 rounded-md max-w-[480px] shadow-md">
         <h3 className="text-red-custom text-heading-lg">Delete this task?</h3>
         <p className="text-medium-grey text-body-lg">
-          Are you sure you want to delete the '{props.task}’ task and its
+          Are you sure you want to delete the &apos;{props.task} task and its
           subtasks? This action cannot be reversed.
         </p>
         <div className="flex flex-col md:flex-row gap-4">

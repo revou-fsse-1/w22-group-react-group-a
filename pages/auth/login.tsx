@@ -159,7 +159,7 @@ const handleLogin: SubmitHandler<LoginForm> = async (data) => {
           </button>
         </form>
         <span className="text-lines-light text-body-md">
-          Don't have account? &nbsp;
+          Do not have account? &nbsp;
           <Link
             href="/auth/register"
             className="text-main-purple hover:underline hover:text-main-purple-hover"
