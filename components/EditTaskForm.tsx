@@ -9,14 +9,14 @@ import StatusList from "./StatusList";
 import { supabase } from "@/utils/client";
 
 interface Subtask {
-  id: string;
+  id?: string;
   is_completed: boolean;
   subtask: string;
   task_id: string;
 }
 
 export default function EditTaskForm(props: {
-  id: string;
+  taskId: string;
   task: string;
   description: string;
   subtasks: [
@@ -26,17 +26,32 @@ export default function EditTaskForm(props: {
       is_completed: boolean;
     }
   ];
-  columns: string[];
+  columns: [
+    {
+      id: string;
+      column: string;
+      color: string;
+    }
+  ];
   status: string;
   setEditTaskFormIsActive: React.Dispatch<React.SetStateAction<boolean>>;
+  setRerenderTaskDetail: React.Dispatch<React.SetStateAction<any>>;
 }) {
   const [status, setStatus] = useState(props.status);
   const [statusId, setStatusId] = useState(props.status);
   const [titleInput, setTitleInput] = useState(props.task);
   const [descriptionInput, setDescriptionInput] = useState(props.description);
-  const [subtasks, setSubtasks] = useState<Subtask[]>([]);
+
+  const [subtasks, setSubtasks] = useState<Subtask[]>([
+    {
+      id: "",
+      is_completed: false,
+      subtask: "Loading",
+      task_id: props.taskId,
+    },
+  ]);
+
   const [statusListIsActive, setStatusListIsActive] = useState(false);
-  const [updateSubtask, setUpdateSubtask] = useState(false);
   const toggleStatusList = () => {
     setStatusListIsActive((current) => !current);
   };
@@ -53,56 +68,68 @@ export default function EditTaskForm(props: {
     },
     []
   );
-
   const fetchSubtasks = async () => {
     const { data, error } = await supabase
       .from("subtasks")
       .select(`( * )`)
-      .eq("task_id", props.id);
+      .eq("task_id", props.taskId);
     if (error) return error;
     setSubtasks(data);
   };
-  // const fetchSubtasks = useCallback(() => {
-  //   async () => {
-  //     const { data, error } = await supabase
-  //       .from("subtasks")
-  //       .select(`( * )`)
-  //       .eq("task_id", props.id);
-  //     if (error) return error;
-  //     setSubtasks(data);
-  //   };
-  // }, []);
 
   useEffect(() => {
     fetchSubtasks();
   }, []);
 
   const addNewSubtask = async () => {
-    const { data, error } = await supabase
-      .from("subtasks")
-      .insert([{ subtask: "New Subtask", task_id: props.id }])
-      .select();
+    setSubtasks((current) => [
+      ...current,
+      {
+        id: `${crypto.randomUUID()}`,
+        is_completed: false,
+        subtask: "New Subtask",
+        task_id: props.taskId,
+      },
+    ]);
   };
 
-  const mappedSubtasks = subtasks.map((subtask) => (
+  const mappedSubtasks = subtasks.map((subtask, index) => (
     <SubtaskInput
-      key={subtask.id}
-      id={subtask.id}
-      subtask={subtask.subtask}
-      is_completed={subtask.is_completed}
-      updateSubtask={updateSubtask}
+      key={subtasks[index].id}
+      id={subtasks[index].id}
+      index={index}
+      subtask={subtasks[index].subtask}
+      is_completed={subtasks[index].is_completed}
+      setSubtasks={setSubtasks}
     />
   ));
+
+  const updateTask = async () => {
+    const { data, error } = await supabase
+      .from("tasks")
+      .update({ task: titleInput, description: descriptionInput })
+      .eq("id", props.taskId);
+    if (error) console.log(error);
+  };
+  const upsertSubtasks = async () => {
+    const { data, error } = await supabase.from("subtasks").upsert(subtasks);
+    if (error) console.log(error);
+  };
+
   const handleFormSubmit = (e: React.ChangeEvent<any>) => {
     e.preventDefault();
-    setUpdateSubtask((current) => !current);
-    alert("form submitted");
+    updateTask();
+    upsertSubtasks();
+    props.setRerenderTaskDetail((current: string[]) => [...current, ""]);
     props.setEditTaskFormIsActive(false);
   };
 
   return (
     <div
-      onClick={() => props.setEditTaskFormIsActive(false)}
+      onClick={() => {
+        props.setEditTaskFormIsActive(false);
+        props.setRerenderTaskDetail((current: string[]) => [...current, ""]);
+      }}
       className="bg-black-overlay flex justify-center items-center w-screen h-screen min-h-fit p-4 fixed z-50 top-0 left-0"
     >
       <form
@@ -176,13 +203,15 @@ export default function EditTaskForm(props: {
           {/* STATUS LIST */}
           {statusListIsActive && (
             <StatusList
+              id={props.taskId}
               columns={props.columns}
               status={status}
+              setStatusId={setStatusId}
               setStatus={setStatus}
             />
           )}
         </div>
-        <button className="text-body-md bg-main-purple h-[40px] w-full rounded-full">
+        <button className="text-body-md bg-main-purple hover:bg-main-purple-hover h-[40px] w-full rounded-full">
           Update Task
         </button>
       </form>

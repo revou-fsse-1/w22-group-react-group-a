@@ -18,14 +18,12 @@ interface LoginForm {
 
 const schema = yup.object().shape({
   email: yup.string().required("Please fill in the name."),
-  password: yup
-    .string()
-    .required("Please fill in the password.")
-    .min(8, "Password must be at least 8 characters.")
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
-      "Password must contain at least one number, and uppercase and lowercase letters."
-    ),
+  password: yup.string().required("Please fill in the password."),
+  // .min(8, "Password must be at least 8 characters.")
+  // .matches(
+  //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+  //   "Password must contain at least one number, and uppercase and lowercase letters."
+  // ),
 });
 
 function Login() {

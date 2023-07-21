@@ -14,7 +14,6 @@ import IconVerticalEllipsis from "../assets/icon-vertical-ellipsis.svg";
 // COMPONENTS
 import Column from "@/components/Column";
 import Sidebar from "@/components/Sidebar";
-import EmptyBoardMessage from "@/components/EmptyBoardMessage";
 import SidebarMobile from "@/components/SidebarMobile";
 import EditDeleteBoard from "@/components/EditDeleteBoard";
 import NewTaskForm from "@/components/NewTaskForm";
@@ -46,7 +45,8 @@ export default function Board() {
   const [activeBoard, setActiveBoard] = useState("");
   const [activeBoardId, setActiveBoardId] = useState("");
   const [columns, setColumns] = useState<Column[]>([]);
-
+  const [rerenderBoard, setRerenderBoard] = useState([]);
+  const [rerenderColumn, setRerenderColumn] = useState([]);
   // FETCH
   async function fetchBoards() {
     const { data, error } = await supabase
@@ -55,34 +55,30 @@ export default function Board() {
       .eq("email", "nikosetiawanp@gmail.com");
     if (error) return error;
     setBoardList(data[0].boards);
-    setActiveBoard(data[0].boards[0].board);
-    setActiveBoardId(data[0].boards[0].id);
+    if (activeBoard === "") setActiveBoard(data[0].boards[0].board);
+    if (activeBoardId === "") setActiveBoardId(data[0].boards[0].id);
   }
-
-  useEffect(() => {
-    fetchBoards();
-  }, []);
-
-  const fetchAllColumns = useCallback(async () => {
+  const fetchAllColumns = async () => {
     const { data, error } = await supabase
       .from("columns")
       .select("*")
       .eq("board_id", activeBoardId);
     if (error) return error;
     setColumns(data);
-  }, [activeBoardId]);
+  };
 
-  // async function fetchAllColumns() {
-  //   const { data, error } = await supabase
-  //     .from("columns")
-  //     .select("*")
-  //     .eq("board_id", activeBoardId);
-  //   if (error) return error;
-  //   setColumns(data);
-  // }
   useEffect(() => {
-    fetchAllColumns();
-  }, [activeBoardId, boardList, fetchAllColumns]);
+    setTimeout(() => {
+      fetchBoards();
+    }, 100);
+    setActiveBoard(activeBoard);
+  }, [rerenderBoard]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      fetchAllColumns();
+    }, 100);
+  }, [activeBoard, activeBoardId, rerenderBoard, rerenderColumn]);
 
   const addNewColumn = async () => {
     const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
@@ -102,7 +98,14 @@ export default function Board() {
   };
 
   const mappedColumn = columns.map((column) => (
-    <Column key={column.id} data={column} columns={columns} />
+    <Column
+      key={column.id}
+      columnId={column.id}
+      columnData={column}
+      columns={columns}
+      rerenderColumn={rerenderColumn}
+      setRerenderColumn={setRerenderColumn}
+    />
   ));
 
   return (
@@ -123,6 +126,7 @@ export default function Board() {
             setSidebarIsActive={setSidebarIsActive}
             setActiveBoard={setActiveBoard}
             setActiveBoardId={setActiveBoardId}
+            setRerenderBoard={setRerenderBoard}
           />
         )}
 
@@ -225,6 +229,7 @@ export default function Board() {
               newTaskFormIsActive={newTaskFormIsActive}
               setNewTaskFormIsActive={setNewTaskFormIsActive}
               columns={columns}
+              setRerenderColumn={setRerenderColumn}
             />
           )}
           {deleteBoardConfirmIsActive && (
@@ -289,6 +294,8 @@ export default function Board() {
             setBoardList={setBoardList}
             setActiveBoard={setActiveBoard}
             setActiveBoardId={setActiveBoardId}
+            setRerenderColumn={setRerenderColumn}
+            setRerenderBoard={setRerenderBoard}
           />
         )}
       </div>

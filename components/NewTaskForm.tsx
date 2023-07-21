@@ -8,11 +8,20 @@ import IconChevronUp from "../assets/icon-chevron-up.svg";
 import StatusListNew from "./StatusListNew";
 import SubtaskInput from "./SubtaskInput";
 import SubtaskInputNew from "./SubtaskInputNew";
+import { create } from "domain";
+
+interface Subtask {
+  id?: string;
+  is_completed: boolean;
+  subtask: string;
+  task_id: string;
+}
 
 export default function NewTaskForm(props: {
   newTaskFormIsActive: boolean;
-  setNewTaskFormIsActive: React.Dispatch<React.SetStateAction<boolean>>;
   columns: string[];
+  setNewTaskFormIsActive: React.Dispatch<React.SetStateAction<boolean>>;
+  setRerenderColumn: React.Dispatch<React.SetStateAction<any>>;
 }) {
   // STATUS LIST
   const taskId = crypto.randomUUID();
@@ -22,7 +31,7 @@ export default function NewTaskForm(props: {
   const [descriptionInput, setDescriptionInput] = useState("");
   const [status, setStatus] = useState(props.columns[0].column);
   const [statusId, setStatusId] = useState(props.columns[0].id);
-  const [subtasks, setSubtasks] = useState([]);
+  const [subtasks, setSubtasks] = useState<Subtask[]>([]);
   const handleTitleInputChange = useCallback(
     (event: React.ChangeEvent<any>) => {
       setTitleInput(event.target.value);
@@ -36,47 +45,25 @@ export default function NewTaskForm(props: {
     []
   );
 
-  const createAllSubtask = async () => {
-    if (subtasks.length > 0) {
-      const { data, error } = await supabase
-        .from("subtasks")
-        .insert(subtasks)
-        .select();
-      if (error) console.log(error);
-      console.log(data);
-    }
-  };
-  const createTask = async () => {
-    const { data, error } = await supabase
-      .from("tasks")
-      .insert([
-        {
-          id: taskId,
-          task: titleInput,
-          description: descriptionInput,
-          column_id: statusId,
-        },
-      ])
-      .select();
-    if (error) console.log(error);
-  };
-
   const toggleStatusList = () => {
     setStatusListIsActive((current) => !current);
+  };
+
+  const createTask = async () => {
+    const { data, error } = await supabase.from("tasks").insert({
+      id: taskId,
+      task: titleInput,
+      description: descriptionInput,
+      column_id: statusId,
+    });
+    if (error) console.log(error);
   };
   const handleFormSubmit = async (e: React.ChangeEvent<any>) => {
     e.preventDefault();
     createTask();
+    props.setNewTaskFormIsActive(false);
+    props.setRerenderColumn((current: string[]) => [...current, ""]);
   };
-
-  // const mappedSubtasks = subtasks.map((subtask, index) => (
-  //   <SubtaskInputNew
-  //     key={index}
-  //     id={index}
-  //     subtasks={subtasks}
-  //     setSubtasks={setSubtasks}
-  //   />
-  // ));
 
   return (
     <div

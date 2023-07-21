@@ -16,13 +16,20 @@ export default function Task(props: {
   taskId: string;
   description: string;
   columns: string[];
-  status: string;
+  column: string;
   statusId: string;
+  rerenderColumn: string[];
+  setRerenderColumn: React.Dispatch<React.SetStateAction<any>>;
+  setRerenderTaskList: React.Dispatch<React.SetStateAction<any>>;
 }) {
-  const [taskDetail, setTaskDetail] = useState<TaskDetail>({});
+  const [taskDetail, setTaskDetail] = useState<TaskDetail>({
+    task: "Loading",
+    description: "Description",
+  });
   const [subtasks, setSubtasks] = useState<Subtask[]>([]);
   const [taskDetailIsActive, setTaskDetailIsActive] = useState(false);
   const [completedTaskCount, setCompletedTaskCount] = useState(0);
+  const [rerenderTask, setRerenderTask] = useState([]);
 
   const fetchTaskDetail = async () => {
     const { data, error } = await supabase
@@ -47,7 +54,7 @@ export default function Task(props: {
   useEffect(() => {
     fetchTaskDetail();
     fetchSubtasks();
-  }, []);
+  }, [rerenderTask]);
 
   return (
     <>
@@ -67,10 +74,14 @@ export default function Task(props: {
           key={props.taskId}
           taskId={props.taskId}
           columns={props.columns}
-          status={props.status}
+          column={props.column}
           setTaskDetailIsActive={setTaskDetailIsActive}
           completedTaskCount={completedTaskCount}
           setCompletedTaskCount={setCompletedTaskCount}
+          setRerenderTask={setRerenderTask}
+          rerenderColumn={props.rerenderColumn}
+          setRerenderColumn={props.setRerenderColumn}
+          setRerenderTaskList={props.setRerenderTaskList}
         />
       )}
     </>

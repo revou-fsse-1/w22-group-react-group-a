@@ -1,20 +1,21 @@
 import { supabase } from "@/utils/client";
 export default function StatusList(props: {
-  setStatus: React.Dispatch<React.SetStateAction<string>>;
-  setStatusId: React.Dispatch<React.SetStateAction<string>>;
-
   id: string;
   status: string;
-  columns: {
-    column: string;
-    id: string;
-    map: any;
-  };
+  columns: [
+    {
+      id: string;
+      column: string;
+      color: string;
+      // map: any;
+    }
+  ];
+  setStatus: React.Dispatch<React.SetStateAction<string>>;
+  setStatusId: React.Dispatch<React.SetStateAction<string>>;
 }) {
   // map columns
   const updateStatus = async (column: string, columnId: string) => {
     props.setStatus(column);
-
     const { data, error } = await supabase
       .from("tasks")
       .update({ column_id: columnId })

@@ -17,36 +17,64 @@ interface Task {
   subtasks: object[] | any;
 }
 
+interface Column {
+  id: string;
+  column: string;
+  color: string;
+}
+
 export default function Column(props: {
-  data: {
-    id: string;
-    column: string;
-    color: string;
-  };
+  columnId: string;
+  columnData: { id: string; column: string; color: string };
   columns: string[];
+  rerenderColumn: string[];
+  setRerenderColumn: React.Dispatch<React.SetStateAction<any>>;
 }) {
+  const [column, setColumn] = useState<Column>({
+    id: "",
+    column: "Loading",
+    color: "Loading",
+  });
   const [tasks, setTasks] = useState<Task[]>([]);
-  const fetchTasks = useCallback(async () => {
+  const [rerenderTaskList, setRerenderTaskList] = useState([]);
+
+  const fetchColumn = async () => {
+    const { data, error } = await supabase
+      .from("columns")
+      .select("*")
+      .eq("id", props.columnId);
+    if (error) return error;
+    setColumn(data[0]);
+    console.log(data[0]);
+  };
+
+  const fetchTasks = async () => {
     const { data, error } = await supabase
       .from("tasks")
       .select("id, task, description, subtasks (*)")
-      .eq("column_id", props.data.id);
+      .eq("column_id", props.columnId);
     if (error) return error;
     setTasks(data);
-  }, []);
+  };
 
   useEffect(() => {
-    fetchTasks();
-  }, []);
+    setTimeout(() => {
+      fetchColumn();
+      fetchTasks();
+    }, 250);
+  }, [props.rerenderColumn]);
 
   const mappedTasks = tasks.map((task) => (
     <Task
       key={task.id}
       taskId={task.id}
       description={task.description}
-      status={props.data.column}
-      statusId={props.data.id}
+      column={column.column}
+      statusId={column.id}
       columns={props.columns}
+      rerenderColumn={props.rerenderColumn}
+      setRerenderColumn={props.setRerenderColumn}
+      setRerenderTaskList={setRerenderTaskList}
     />
   ));
 
@@ -55,21 +83,21 @@ export default function Column(props: {
       <span className="flex gap-4 text-heading-sm text-medium-grey mb-2">
         <Image
           src={
-            props.data.color === "red"
+            props.columnData.color === "red"
               ? CircleRed
-              : props.data.color === "orange"
+              : props.columnData.color === "orange"
               ? CircleOrange
-              : props.data.color === "yellow"
+              : props.columnData.color === "yellow"
               ? CircleYellow
-              : props.data.color === "green"
+              : props.columnData.color === "green"
               ? CircleGreen
-              : props.data.color === "blue"
+              : props.columnData.color === "blue"
               ? CircleBlue
               : CirclePurple
           }
           alt="circle-blue"
         />
-        {props.data.column.toUpperCase()} ({tasks.length})
+        {props.columnData.column.toUpperCase()} ({tasks.length})
       </span>
       {mappedTasks}
     </div>
