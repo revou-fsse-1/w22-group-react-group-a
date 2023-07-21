@@ -26,13 +26,23 @@ interface Subtask {
 
 export default function TaskDetail(props: {
   taskId: string;
-  columns: string[];
-  status: string;
+  columns: [
+    {
+      id: string;
+      column: string;
+      color: string;
+    }
+  ];
+  column: string;
   setTaskDetailIsActive: React.Dispatch<React.SetStateAction<boolean>>;
   completedTaskCount: number;
   setCompletedTaskCount: React.Dispatch<React.SetStateAction<any>>;
+  setRerenderTask: React.Dispatch<React.SetStateAction<any>>;
+  rerenderColumn: string;
+  setRerenderColumn: React.Dispatch<React.SetStateAction<any>>;
+  setRerenderTaskList: React.Dispatch<React.SetStateAction<any>>;
 }) {
-  const [status, setStatus] = useState(props.status);
+  const [status, setStatus] = useState(props.column);
   const [statusListIsActive, setStatusListIsActive] = useState(false);
   const [editTaskFormIsActive, setEditTaskFormIsActive] = useState(false);
   const [editDeleteTaskIsActive, setEditDeleteTaskIsActive] = useState(false);
@@ -41,9 +51,13 @@ export default function TaskDetail(props: {
   const toggleStatusList = () => {
     setStatusListIsActive((current) => !current);
   };
-
-  const [taskDetail, setTaskDetail] = useState<TaskDetail>({});
+  const [taskDetail, setTaskDetail] = useState<TaskDetail>({
+    task: "Loading",
+    description: "Loading",
+  });
   const [subtasks, setSubtasks] = useState<Subtask[]>([]);
+  const [rerenderTaskDetail, setRerenderTaskDetail] = useState([]);
+  const [completedTaskCount, setCompletedTaskCount] = useState(0);
 
   const fetchTaskDetail = async () => {
     const { data, error } = await supabase
@@ -61,12 +75,15 @@ export default function TaskDetail(props: {
       .eq("task_id", props.taskId);
     if (error) return error;
     setSubtasks(data);
+    setCompletedTaskCount(
+      data.filter((subtask) => subtask.is_completed === true).length
+    );
   };
 
   useEffect(() => {
     fetchTaskDetail();
-    fetchSubtasks();
-  }, []);
+    setTimeout(() => fetchSubtasks(), 200);
+  }, [rerenderTaskDetail]);
 
   const mappedSubtasks = subtasks.map((subtask) => (
     <Subtask
@@ -74,7 +91,7 @@ export default function TaskDetail(props: {
       id={subtask.id}
       subtask={subtask.subtask}
       is_completed={subtask.is_completed}
-      setCompletedTaskCount={props.setCompletedTaskCount}
+      setCompletedTaskCount={setCompletedTaskCount}
     />
   ));
 
@@ -84,6 +101,9 @@ export default function TaskDetail(props: {
         onClick={() => {
           {
             props.setTaskDetailIsActive(false);
+            props.setRerenderTask((current: string[]) => [...current, ""]);
+            props.setRerenderColumn((current: string[]) => [...current, ""]);
+            props.setRerenderTaskList((current: string[]) => [...current, ""]);
           }
         }}
         className="bg-black-overlay flex justify-center items-center w-screen h-screen p-4 fixed top-0 left-0 z-50"
@@ -127,8 +147,7 @@ export default function TaskDetail(props: {
 
           {/* SUBTASKS */}
           <label htmlFor="subtasks" className="mb-4 text-body-md">
-            Subtasks ({props.completedTaskCount} &nbsp; of &nbsp;{" "}
-            {subtasks.length})
+            Subtasks ({completedTaskCount} &nbsp; of &nbsp; {subtasks.length})
           </label>
 
           {/* SUBTASKS CONTAINER */}
@@ -156,7 +175,7 @@ export default function TaskDetail(props: {
                 columns={props.columns}
                 status={status}
                 setStatus={setStatus}
-                id={props.id}
+                id={props.taskId}
               />
             )}
           </button>
@@ -167,19 +186,23 @@ export default function TaskDetail(props: {
         <DeleteTaskConfirm
           id={props.taskId}
           task={taskDetail.task}
+          setTaskDetailIsActive={props.setTaskDetailIsActive}
           setDeleteTaskConfirmIsActive={setDeleteTaskConfirmIsActive}
+          rerenderColumn={props.rerenderColumn}
+          setRerenderColumn={props.setRerenderColumn}
         />
       )}
       {editTaskFormIsActive && (
         <EditTaskForm
           key={props.taskId}
-          id={props.taskId}
+          taskId={props.taskId}
           task={taskDetail.task}
           description={taskDetail.description}
           subtasks={subtasks}
           columns={props.columns}
-          status={props.status}
+          status={props.column}
           setEditTaskFormIsActive={setEditTaskFormIsActive}
+          setRerenderTaskDetail={setRerenderTaskDetail}
         />
       )}
     </>

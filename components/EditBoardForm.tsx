@@ -2,6 +2,13 @@ import { useCallback, useState } from "react";
 import ColumnInput from "./ColumnInput";
 import { supabase } from "@/utils/client";
 
+interface Column {
+  id: string;
+  column: string;
+  color: string;
+  board_id: string;
+}
+
 export default function EditBoardForm(props: {
   activeBoard: string;
   activeBoardId: string;
@@ -19,8 +26,9 @@ export default function EditBoardForm(props: {
   setColumns: React.Dispatch<React.SetStateAction<boolean>>;
   setActiveBoard: React.Dispatch<React.SetStateAction<string>>;
   setActiveBoardId: React.Dispatch<React.SetStateAction<string>>;
+  setRerenderBoard: React.Dispatch<React.SetStateAction<any>>;
+  setRerenderColumn: React.Dispatch<React.SetStateAction<any>>;
 }) {
-  const [updateColumn, setUpdateColumn] = useState(false);
   const [boardNameInput, setBoardNameInput] = useState(props.activeBoard);
   const handleBoardNameInputChange = useCallback(
     (event: React.ChangeEvent<any>) => {
@@ -28,17 +36,33 @@ export default function EditBoardForm(props: {
     },
     []
   );
+  const [columns, setColumns] = useState<Column[]>(props.columns);
 
-  async function fetchBoards() {
-    const { data, error } = await supabase
-      .from("users")
-      .select(`boards (*)`)
-      .eq("email", "nikosetiawanp@gmail.com");
-    if (error) return error;
-    props.setBoardList(data[0].boards);
-    props.setActiveBoard(data[0].boards[0].board);
-    props.setActiveBoardId(data[0].boards[0].id);
-  }
+  const mappedColumnInput = columns.map((column) => (
+    <ColumnInput
+      key={column.id}
+      id={column.id}
+      column={column.column}
+      setColumns={setColumns}
+      setRerenderColumn={props.setRerenderColumn}
+      setRerenderBoard={props.setRerenderBoard}
+    />
+  ));
+
+  const addNewColumn = async () => {
+    const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    const randomColor = colors[randomIndex];
+    setColumns((current) => [
+      ...current,
+      {
+        id: crypto.randomUUID(),
+        column: "New Column",
+        board_id: props.activeBoardId,
+        color: randomColor,
+      },
+    ]);
+  };
 
   const updateBoard = async () => {
     const { data, error } = await supabase
@@ -49,45 +73,29 @@ export default function EditBoardForm(props: {
     if (error) console.log(error);
   };
 
+  const upsertColumns = async () => {
+    const { data, error } = await supabase.from("columns").upsert(columns);
+    if (error) console.log(error);
+  };
+
   const handleFormSubmit = (e: React.ChangeEvent<any>) => {
     e.preventDefault();
     updateBoard();
-    fetchBoards();
-    setUpdateColumn((current) => !current);
-    console.log(updateColumn);
+    columns.length > 0 && upsertColumns();
+    props.setRerenderBoard((current: string[]) => [...current, ""]);
+    props.setRerenderColumn((current: string[]) => [...current, ""]);
+    props.setActiveBoard(boardNameInput);
+    props.setActiveBoardId(props.activeBoardId);
     props.setEditBoardFormIsActive(false);
-  };
-
-  const mappedColumnInput = props.columns.map((column) => (
-    <ColumnInput
-      key={column.id}
-      id={column.id}
-      column={column.column}
-      updateColumn={updateColumn}
-      setColumns={props.setColumns}
-    />
-  ));
-
-  const addNewColumn = async () => {
-    const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
-    const randomIndex = Math.floor(Math.random() * colors.length);
-    const randomColor = colors[randomIndex];
-    const { data, error } = await supabase
-      .from("columns")
-      .insert([
-        {
-          column: "New Column",
-          board_id: props.activeBoardId,
-          color: randomColor,
-        },
-      ])
-      .select();
-    props.setColumns((current) => [...current, data[0]]);
   };
 
   return (
     <div
-      onClick={() => props.setEditBoardFormIsActive(false)}
+      onClick={() => {
+        props.setEditBoardFormIsActive(false);
+        props.setRerenderBoard((current: string[]) => [...current, ""]);
+        props.setRerenderColumn((current: string[]) => [...current, ""]);
+      }}
       className="bg-black-overlay flex justify-center items-center w-screen h-screen min-h-fit p-4 fixed z-50"
     >
       <form
@@ -129,7 +137,12 @@ export default function EditBoardForm(props: {
         <button
           type="button"
           className="text-body-md bg-main-purple h-[40px] w-full rounded-full"
-          onClick={handleFormSubmit}
+          onClick={(e) => {
+            handleFormSubmit(e);
+            props.setEditBoardFormIsActive(false);
+            props.setRerenderBoard((current: string[]) => [...current, ""]);
+            props.setRerenderColumn((current: string[]) => [...current, ""]);
+          }}
         >
           Update Board
         </button>

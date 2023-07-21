@@ -6,31 +6,38 @@ import { supabase } from "@/utils/client";
 export default function SubtaskInput(props: {
   key: string;
   id: string;
+  index: number;
   subtask: string;
   is_completed: boolean;
   updateSubtask: boolean;
+  setSubtasks: React.Dispatch<React.SetStateAction<any>>;
 }) {
-  const [subtaskInput, setSubtaskInput] = useState(props.subtask);
-  const handleSubtaskInputChange = useCallback(
-    (event: React.ChangeEvent<any>) => {
-      setSubtaskInput(event.target.value);
-    },
-    []
-  );
+  const handleSubtaskInputChange = (id: string, key: string, value: string) => {
+    props.setSubtasks((prevArray: [{ id: string; value: string }]) =>
+      prevArray.map((object) =>
+        object.id === id ? { ...object, [key]: value } : object
+      )
+    );
+  };
 
   const deleteSubtask = async () => {
+    props.setSubtasks(
+      (
+        current: [
+          {
+            id: string;
+            subtask: string;
+            is_completed: boolean;
+          }
+        ]
+      ) => current.filter((subtask) => subtask.id !== props.id)
+    );
     const { error } = await supabase
       .from("subtasks")
       .delete()
       .eq("id", props.id);
+    console.log(error);
   };
-  const updateSubtask = () => {
-    alert(`${props.subtask} is updated`);
-  };
-
-  useEffect(() => {
-    props.updateSubtask && updateSubtask();
-  }, [props.updateSubtask]);
 
   return (
     <div key={props.id} className="flex gap-4">
@@ -38,8 +45,10 @@ export default function SubtaskInput(props: {
         type="text"
         name="subtask"
         id="subtask"
-        value={subtaskInput}
-        onChange={handleSubtaskInputChange}
+        value={props.subtask}
+        onChange={(e) =>
+          handleSubtaskInputChange(props.id, "subtask", e.target.value)
+        }
         className="w-full h-[40px] bg-dark-grey border border-lines-dark px-4 rounded-md text-white-custom text-body-lg placeholder:text-white-custom/25 placeholder:text-body-lg outline-none"
         placeholder="e.g. Take coffee break"
       />

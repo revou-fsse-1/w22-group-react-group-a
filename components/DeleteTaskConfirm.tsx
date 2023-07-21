@@ -4,12 +4,17 @@ export default function DeleteTaskConfirm(props: {
   id: string;
   task: string;
   setDeleteTaskConfirmIsActive: React.Dispatch<React.SetStateAction<boolean>>;
+  setTaskDetailIsActive: React.Dispatch<React.SetStateAction<boolean>>;
+  rerenderColumn: string;
+  setRerenderColumn: React.Dispatch<React.SetStateAction<any>>;
 }) {
   const hideDeleteTaskConfirm = () => {
     props.setDeleteTaskConfirmIsActive(false);
   };
   const deleteTask = async () => {
     const { error } = await supabase.from("tasks").delete().eq("id", props.id);
+    props.setDeleteTaskConfirmIsActive(false);
+    props.setTaskDetailIsActive(false);
   };
 
   return (
@@ -22,7 +27,10 @@ export default function DeleteTaskConfirm(props: {
         </p>
         <div className="flex flex-col md:flex-row gap-4">
           <button
-            onClick={deleteTask}
+            onClick={() => {
+              deleteTask();
+              props.setRerenderColumn((current: string[]) => [...current, ""]);
+            }}
             className="text-body-md h-[40px] w-full md:max-w-[200px] rounded-full text-white-custom bg-red-custom hover:bg-red-custom-hover"
           >
             Delete
