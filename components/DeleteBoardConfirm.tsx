@@ -20,6 +20,8 @@ export default function DeleteBoardConfirm(props: {
       .eq("id", props.activeBoardId);
     props.setDeleteBoardConfirmIsActive(false);
     props.setRerenderBoard((current: string[]) => [...current, ""]);
+    props.setActiveBoard("");
+    props.setActiveBoardId("");
   };
 
   return (
