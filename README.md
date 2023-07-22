@@ -44,11 +44,20 @@ This is challenging project, even as a group project. We gained deeper understan
 
 - [react.dev/learn](https://react.dev/learn) - This helped me when I need to search something about react
 - [supabasee.com/docs](https://supabase.com/docs/reference/javascript/initializing) - This helped me when I need to search something about supabase
-
+- 
 ## Roles
 
 - [Niko Setiawan P](https://github.com/nikosetiawanp) - Frontend Engineer
 - [Mahdi Harish Rahman](https://github.com/mahdiharish) - Frontend Engineer
+## Screenshots
+
+<img src='https://res.cloudinary.com/dz209s6jk/image/upload/v1654885206/Challenges/jc26dvdz8ou8mvbu08uh.jpg' alt='image' />
+<img src='https://res.cloudinary.com/dz209s6jk/image/upload/v1654885265/Challenges/blovaxconu7jof5w2rbu.jpg' alt='image' />
+<img src='https://res.cloudinary.com/dz209s6jk/image/upload/v1654885265/Challenges/ni33puw1yoksdrpldzgt.jpg' alt='image' />
+<img src='https://res.cloudinary.com/dz209s6jk/image/upload/v1654885327/Challenges/waoapejtl5cpjy9makop.jpg' alt='image' />
+<img src='https://res.cloudinary.com/dz209s6jk/image/upload/v1654885327/Challenges/pbqyx2jh4tq5pbumt8zz.jpg' alt='image' />
+
+
 
 ## Acknowledgments
 
