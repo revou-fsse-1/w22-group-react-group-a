@@ -57,7 +57,7 @@ export default function Sidebar(props: {
   );
 
   return (
-    <div className="hidden md:flex flex-col pr-6 bg-dark-grey h-screen min-w-[260px] border-r border-r-lines-dark">
+    <div className="hidden md:flex flex-col pr-6 sticky left-0 bg-dark-grey h-screen min-w-[260px] border-r border-r-lines-dark">
       <div className="w-full h-[80px] p-6 flex items-center ">
         <Image priority src={LogoLight} alt="logo-dark" />
       </div>

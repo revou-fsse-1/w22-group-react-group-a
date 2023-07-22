@@ -35,6 +35,7 @@ export default function TaskDetail(props: {
   taskId: string;
   columns: Column[];
   column: string;
+  columnId: string;
   setTaskDetailIsActive: React.Dispatch<React.SetStateAction<boolean>>;
   completedTaskCount: number;
   setCompletedTaskCount: React.Dispatch<React.SetStateAction<any>>;
@@ -43,7 +44,12 @@ export default function TaskDetail(props: {
   setRerenderColumn: React.Dispatch<React.SetStateAction<any>>;
   setRerenderTaskList: React.Dispatch<React.SetStateAction<any>>;
 }) {
+  useEffect(() => {
+    console.log(props.column);
+  }, []);
+
   const [status, setStatus] = useState(props.column);
+  const [statusId, setStatusId] = useState(props.columnId);
   const [statusListIsActive, setStatusListIsActive] = useState(false);
   const [editTaskFormIsActive, setEditTaskFormIsActive] = useState(false);
   const [editDeleteTaskIsActive, setEditDeleteTaskIsActive] = useState(false);
@@ -173,10 +179,12 @@ export default function TaskDetail(props: {
             {/* STATUS LIST */}
             {statusListIsActive && (
               <StatusList
+                id={props.taskId}
                 columns={props.columns}
                 status={status}
                 setStatus={setStatus}
-                id={props.taskId}
+                statusId={statusId}
+                setStatusId={setStatusId}
               />
             )}
           </button>

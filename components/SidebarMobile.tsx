@@ -26,7 +26,7 @@ export default function BoardsSelection(props: {
       <button
         key={board.id}
         className="text-heading-md flex items-center gap-4 w-[100%] bg-main-purple px-6 py-4 rounded-r-full"
-        onClick={() => props.setSidebarIsActive(false)}
+        onClick={() => props.setSidebarIsActive((current) => !current)}
       >
         <Image priority src={IconBoardWhite} alt="icon-board" />
         {board.board}
@@ -39,7 +39,7 @@ export default function BoardsSelection(props: {
         onClick={() => {
           props.setActiveBoard(board.board);
           props.setActiveBoardId(board.id);
-          props.setSidebarIsActive(false);
+          props.setSidebarIsActive((current) => !current);
         }}
       >
         <Image priority src={IconBoard} alt="icon-board" />
@@ -57,7 +57,7 @@ export default function BoardsSelection(props: {
 
   return (
     <div
-      onClick={() => props.setSidebarIsActive(false)}
+      onClick={() => props.setSidebarIsActive((current) => !current)}
       className="w-screen h-screen bg-black-overlay fixed flex justify-center z-50 top-0 left-0 p-24 md:hidden"
     >
       <div

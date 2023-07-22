@@ -9,12 +9,15 @@ interface Column {
 export default function StatusList(props: {
   id: string;
   status: string;
+  statusId: string;
   columns: Column[];
   setStatus: React.Dispatch<React.SetStateAction<string>>;
+  setStatusId: React.Dispatch<React.SetStateAction<string>>;
 }) {
   // map columns
   const updateStatus = async (column: string, columnId: string) => {
     props.setStatus(column);
+    props.setStatusId;
     const { data, error } = await supabase
       .from("tasks")
       .update({ column_id: columnId })
@@ -30,9 +33,7 @@ export default function StatusList(props: {
         }}
         key={column.id}
         className={` ${
-          props.status == column.column
-            ? "text-main-purple"
-            : "text-medium-grey"
+          props.statusId == column.id ? "text-main-purple" : "text-medium-grey"
         } text-body-md md:text-body-lg hover:cursor-pointer hover:bg-dark-grey w-full text-left px-4 py-3`}
       >
         {column.column}

@@ -23,7 +23,7 @@ export default function Task(props: {
   description: string;
   columns: Column[];
   column: string;
-  statusId: string;
+  columnId: string;
   rerenderColumn: string[];
   setRerenderColumn: React.Dispatch<React.SetStateAction<any>>;
   setRerenderTaskList: React.Dispatch<React.SetStateAction<any>>;
@@ -81,6 +81,7 @@ export default function Task(props: {
           taskId={props.taskId}
           columns={props.columns}
           column={props.column}
+          columnId={props.columnId}
           setTaskDetailIsActive={setTaskDetailIsActive}
           completedTaskCount={completedTaskCount}
           setCompletedTaskCount={setCompletedTaskCount}

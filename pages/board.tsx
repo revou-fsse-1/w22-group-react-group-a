@@ -48,7 +48,7 @@ export default function Board() {
     getUserData();
   }, []);
 
-  const [sidebarIsActive, setSidebarIsActive] = useState(false);
+  const [sidebarIsActive, setSidebarIsActive] = useState(true);
   const [editDeleteBoardIsActive, setEditDeleteBoardIsActive] = useState(false);
   const [newTaskFormIsActive, setNewTaskFormIsActive] = useState(false);
   const [editBoardFormIsActive, setEditBoardFormIsActive] = useState(false);
@@ -60,38 +60,23 @@ export default function Board() {
   };
 
   // DATA
-  const [boardList, setBoardList] = useState<Board[]>([{ id: "", board: "" }]);
+  const [boardList, setBoardList] = useState<Board[]>([]);
   const [activeBoard, setActiveBoard] = useState("");
   const [activeBoardId, setActiveBoardId] = useState("");
   const [columns, setColumns] = useState<Column[]>([]);
-  const [rerenderBoard, setRerenderBoard] = useState([]);
+  const [rerenderBoard, setRerenderBoard] = useState<string[]>([]);
   const [rerenderColumn, setRerenderColumn] = useState([]);
   // FETCH
-  // async function fetchBoards() {
-  //   const { data, error } = await supabase
-  //     .from("users")
-  //     .select(`boards (*)`)
-  //     .eq("email", "nikosetiawanp@gmail.com");
-  //   if (error) return error;
-  //   setBoardList(data[0].boards);
-  //   if (activeBoard === "") setActiveBoard(data[0].boards[0].board);
-  //   if (activeBoardId === "") setActiveBoardId(data[0].boards[0].id);
-  // }
 
   async function fetchBoards() {
-    // const { data, error } = await supabase
-    //   .from("boards")
-    //   .select("*")
-    //   .eq("email", "nikosetiawanp@gmail.com");
-
     let { data: boards, error } = await supabase
       .from("boards")
       .select("*")
       .eq("user_id", userId);
-    console.log(boards);
     if (!boards) return error;
     if (error) return error;
     setBoardList(boards);
+    if (boards.length === 0) return;
     if (activeBoard === "") setActiveBoard(boards[0].board);
     if (activeBoardId === "") setActiveBoardId(boards[0].id);
   }
@@ -108,15 +93,23 @@ export default function Board() {
   useEffect(() => {
     setTimeout(() => {
       fetchBoards();
-    }, 100);
+    }, 250);
     setActiveBoard(activeBoard);
   }, [rerenderBoard, userId]);
 
   useEffect(() => {
     setTimeout(() => {
       fetchAllColumns();
-    }, 100);
+    }, 250);
   }, [activeBoard, activeBoardId, rerenderBoard, rerenderColumn, userId]);
+
+  const addNewBoard = async () => {
+    const { data, error } = await supabase
+      .from("boards")
+      .insert([{ board: "New Board", user_id: userId }])
+      .select();
+    setRerenderBoard((current) => [...current, ""]);
+  };
 
   const addNewColumn = async () => {
     const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
@@ -136,14 +129,16 @@ export default function Board() {
   };
 
   const mappedColumn = columns.map((column) => (
-    <Column
-      key={column.id}
-      columnId={column.id}
-      columnData={column}
-      columns={columns}
-      rerenderColumn={rerenderColumn}
-      setRerenderColumn={setRerenderColumn}
-    />
+    <>
+      <Column
+        key={column.id}
+        columnId={column.id}
+        columnData={column}
+        columns={columns}
+        rerenderColumn={rerenderColumn}
+        setRerenderColumn={setRerenderColumn}
+      />
+    </>
   ));
 
   return (
@@ -169,10 +164,10 @@ export default function Board() {
           />
         )}
 
-        {/* NAVBAR AND VIEWPORT CONTAINER */}
-        <div className="w-full flex flex-col">
+        {/* PAGE CONTAINER */}
+        <div className="w-screen overflow-hidden flex flex-col">
           {/* NAVBAR */}
-          <nav className="bg-dark-grey h-[65px] md:min-h-[80px] flex items-center gap-4 md:gap-8 px-4 md:px-6 w-full md:border-b border-lines-dark">
+          <nav className="bg-dark-grey h-[65px] md:min-h-[80px] sticky flex items-center gap-4 md:gap-8 px-4 md:px-6 w-full md:border-b border-lines-dark">
             {/* LOGO MOBILE*/}
             <Image
               className="md:hidden"
@@ -191,15 +186,16 @@ export default function Board() {
             <span className="hidden md:block text-heading-lg">
               {activeBoard}
             </span>
+
             {/* BOARDS SELECTION BUTTON MOBILE */}
             <button
-              onClick={() => setSidebarIsActive(true)}
+              onClick={() => setSidebarIsActive((current) => !current)}
               className="relative text-heading-lg text-white flex items-center gap-4 md:hidden"
             >
               {activeBoard}
               <Image
                 priority
-                src={sidebarIsActive ? IconChevronUp : IconChevronDown}
+                src={!sidebarIsActive ? IconChevronUp : IconChevronDown}
                 alt="icon-chevron-down"
               />
             </button>
@@ -251,7 +247,7 @@ export default function Board() {
             </div>
           </nav>
           {/* POPUPS */}
-          {sidebarIsActive && (
+          {!sidebarIsActive && (
             <SidebarMobile
               activeBoard={activeBoard}
               activeBoardId={activeBoardId}
@@ -286,9 +282,23 @@ export default function Board() {
           )}
 
           {/* VIEWPORT */}
-          <section className="w-full h-full flex p-4 pt-6 gap-6 overflow-auto scrollbar-hide mb-6">
+          <section className="w-full max-w-[fit] h-full flex p-4 pt-6 gap-6 overflow-scroll scrollbar-hide mb-6">
             {/* COLUMN */}
-            {columns.length > 0 ? (
+
+            {boardList.length < 1 ? (
+              <div className="flex flex-col w-full items-center justify-center gap-8">
+                <span className="text-heading-lg text-center text-medium-grey">
+                  You don't have any board yet. Create a new board to get
+                  started
+                </span>
+                <button
+                  onClick={addNewBoard}
+                  className="bg-main-purple text-heading-md p-4 px-6 rounded-full hover:bg-main-purple-hover"
+                >
+                  + Create New Board
+                </button>
+              </div>
+            ) : columns.length > 0 ? (
               mappedColumn
             ) : (
               <div className="flex flex-col w-full items-center justify-center gap-8">
@@ -303,7 +313,7 @@ export default function Board() {
                 </button>
               </div>
             )}
-            {columns.length > 0 && (
+            {columns.length > 0 && boardList.length > 0 && (
               <button
                 onClick={addNewColumn}
                 className="flex justify-center items-center text-heading-xl text-medium-grey w-[280px] min-w-[280px] h-[815px] bg-gradient-to-b from-dark-grey/25 to-dark-grey/10 rounded-md mt-6"
@@ -311,8 +321,6 @@ export default function Board() {
                 + New Column
               </button>
             )}
-
-            {/* EMPTY BOARD MESSAGE */}
           </section>
         </div>
 

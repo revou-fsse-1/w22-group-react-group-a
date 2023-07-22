@@ -69,7 +69,7 @@ export default function Column(props: {
       taskId={task.id}
       description={task.description}
       column={column.column}
-      statusId={column.id}
+      columnId={column.id}
       columns={props.columns}
       rerenderColumn={props.rerenderColumn}
       setRerenderColumn={props.setRerenderColumn}
