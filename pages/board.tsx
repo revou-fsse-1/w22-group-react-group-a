@@ -288,7 +288,7 @@ export default function Board() {
             {boardList.length < 1 ? (
               <div className="flex flex-col w-full items-center justify-center gap-8">
                 <span className="text-heading-lg text-center text-medium-grey">
-                  You don't have any board yet. Create a new board to get
+                  You do not have any board yet. Create a new board to get
                   started
                 </span>
                 <button
