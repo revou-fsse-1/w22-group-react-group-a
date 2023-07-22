@@ -217,7 +217,9 @@ export default function EditTaskForm(props: {
               id={props.taskId}
               columns={props.columns}
               status={status}
+              statusId={statusId}
               setStatus={setStatus}
+              setStatusId={setStatusId}
             />
           )}
         </div>
