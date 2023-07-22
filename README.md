@@ -10,6 +10,14 @@ This is group project about task management app, design by Frontend Mentor.
 
 Project demo : https://w22-group-react-group-a.vercel.app/
 
+## Demo Video
+
+
+
+https://github.com/revou-fsse-1/w22-group-react-group-a/assets/119645228/1edc74c7-cc11-417e-b1ff-41af5935c1e7
+
+
+
 ## Overview
 
 ### Built with
