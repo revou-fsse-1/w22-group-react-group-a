@@ -44,10 +44,6 @@ export default function TaskDetail(props: {
   setRerenderColumn: React.Dispatch<React.SetStateAction<any>>;
   setRerenderTaskList: React.Dispatch<React.SetStateAction<any>>;
 }) {
-  useEffect(() => {
-    console.log(props.column);
-  }, []);
-
   const [status, setStatus] = useState(props.column);
   const [statusId, setStatusId] = useState(props.columnId);
   const [statusListIsActive, setStatusListIsActive] = useState(false);

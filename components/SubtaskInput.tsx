@@ -34,7 +34,6 @@ export default function SubtaskInput(props: {
       .from("subtasks")
       .delete()
       .eq("id", props.id);
-    console.log(error);
   };
 
   return (

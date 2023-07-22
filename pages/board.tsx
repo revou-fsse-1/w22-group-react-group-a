@@ -41,7 +41,6 @@ export default function Board() {
     } = await supabase.auth.getUser();
     if (!user) return;
     setUserId(user.id);
-    console.log(user.id);
   };
 
   useEffect(() => {
