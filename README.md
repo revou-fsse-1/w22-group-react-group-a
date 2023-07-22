@@ -1,12 +1,16 @@
-# Product Feedback App
+# Kanban Task Management App
+
+To login into the app, please use below account :
+
+- email : nikosetiawanp@gmail.com
+
+- password : nikosetiawanp
 
 This is group project about task management app, design by Frontend Mentor.
 
-Project demo : Coming soon
+Project demo : https://w22-group-react-group-a.vercel.app/
 
 ## Overview
-
-<img src='https://res.cloudinary.com/dz209s6jk/image/upload/v1654885206/Challenges/jc26dvdz8ou8mvbu08uh.jpg' alt='image'>
 
 ### Built with
 
@@ -20,6 +24,13 @@ Project demo : Coming soon
 - Receive form validations when trying to create/edit boards and tasks
 - Mark subtasks as complete and move tasks between columns
 - Hide/show the board sidebar
+
+### Future Improvements
+
+- User can drag and drop task into other column
+- Option to change column color
+- Add search feature
+- Collaboration between users
 
 ### What I learned
 
