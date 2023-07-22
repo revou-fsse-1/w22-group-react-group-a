@@ -12,11 +12,7 @@ Project demo : https://w22-group-react-group-a.vercel.app/
 
 ## Demo Video
 
-
-
-https://github.com/revou-fsse-1/w22-group-react-group-a/assets/119645228/1edc74c7-cc11-417e-b1ff-41af5935c1e7
-
-
+https://github.com/revou-fsse-1/w22-group-react-group-a/assets/119645228/608d1f2e-6d1c-49e0-a518-a3563ef9f80b
 
 ## Overview
 
